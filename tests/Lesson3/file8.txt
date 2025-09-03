@@ -1,0 +1,2 @@
+//Chạy lệnh git init
+Khởi tạo repossitory trống 

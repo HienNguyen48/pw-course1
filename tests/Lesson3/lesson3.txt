@@ -1,0 +1,4 @@
+git commit --amend: 
+git commit --amend -m”<message>”
+git restore --staged <file>: đưa file từ vùng staging về directory 
+git reset HEAD~1.: đưa file từ vùng repository về directory 
