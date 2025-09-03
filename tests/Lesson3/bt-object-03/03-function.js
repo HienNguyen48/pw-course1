@@ -14,7 +14,7 @@ const { Console } = require("console");
 // console.log(findMin(1, -2, 90));
 // console.log(findMin(1, 22, -230));
 
-// 3. Viết hàm getTopStudents nhận 2 tham số:
+// 3. Viết hàm getTopStudents nhận 2 tham số: => bài này em đang làm dở vì chưa hiểu
 // ● students: mảng các object, mỗi object chứa name (tên) và score (điểm).
 // ● threshold: ngưỡng điểm để được coi là "top" (số).
 // Hàm trả về mảng mới chứa tên của những học sinh có điểm >= threshold.
@@ -40,7 +40,7 @@ function getTopStudents(students, threshold){
 }
 
 
-// 4. Viết hàm calculateInterest nhận 3 tham số:
+// 4. Viết hàm calculateInterest nhận 3 tham số: => bài này e đang làm dở vì chưa hiểu
 // ● principal: số tiền gửi ban đầu (số).
 // ● rate: lãi suất hàng năm (phần trăm, ví dụ 5 nghĩa là 5%).
 // ● years: số năm gửi.
