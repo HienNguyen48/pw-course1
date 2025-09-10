@@ -7,12 +7,21 @@ const expenses = [50, 100, 150];
 
 // 4.1 Từ scores, tạo mảng mới: tăng 10% nếu < 90, giảm 5% nếu ≥ 90. 
 const scores = [85, 90, 78]; 
-let newscores = scores.map((value) => {
-    
+let newscores = scores.map((scores) => {
+    if(scores < 90){
+        return scores * 0.1;
+    }else{
+        return scores * 0.05;
+    }
 })
+console.log(newscores);
 
 // 4.2 Từ numbers = [1, 2, 3], chuyển thành mảng chuỗi. 
-const numbers = [1, 2, 3, 4]; 
-
+// const numbers = [1, 2, 3, 4]; 
+// let newNumbers = numbers.map(String);
+// console.log(newNumbers);
 
 // 4.3 Từ numbers = [1, 2, 3], nhân đôi mỗi giá trị. 
+// const numbers = [1, 2, 3, 4]; 
+// let newNumbers = numbers.map((value) => value * 2);
+// console.log(newNumbers);
