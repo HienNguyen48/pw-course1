@@ -1,0 +1,10 @@
+Test 1
+Test 2
+Test 3
+
+// lệnh run TS
+npx ts-node <path_file>
+npx tsx <path_file>
+
+// lệnh run JS
+node <path_file>
