@@ -3,6 +3,7 @@ import { ProductPage } from "./production.page";
 import { register } from "module";
 
 
+
 export class MaterialBasePage {
     page: Page;
     xpathRegisterPage: string;

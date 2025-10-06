@@ -1,5 +1,6 @@
 import { Page } from "@playwright/test";
 import { MaterialBasePage } from "./01.pom.materialbase.page";
+import { userInfo } from "os";
 
 
 export class RegisterBasePage extends MaterialBasePage {
@@ -64,6 +65,18 @@ export class RegisterBasePage extends MaterialBasePage {
 
     async Btnregister(){
         await this.page.locator(this.xpathBtnRegister).click();
+    }
+
+    async getxpathInfoInTable() {
+        const numberOfrow = await this.page.locator("//tbody//tr").count();
+        const actualUsername = await this.page.locator(`//tbody//tr[${numberOfrow}]//td[2]`).textContent();
+        const userInfo = {
+            username: actualUsername,
+            email: await this.page.locator(`//tbody//tr[${numberOfrow}]//td[3]`).textContent(),
+            information : await this.page.locator(`//tbody//tr[${numberOfrow}]//td[4]`).textContent(),
+        }
+        
+        return userInfo;
     }
     
 
