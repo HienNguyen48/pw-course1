@@ -22,9 +22,17 @@ export default defineConfig({
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: 'html',
+   reporter: [
+    ['list'], // Hiển thị từng test (TCS1, Login article, ...)
+    ['html', { open: 'always' }], // Tự động mở giao diện HTML sau khi chạy xong
+   ],
+  //  'html',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
+    baseURL: 'http://192.168.1.9:40010',
+    extraHTTPHeaders: {
+      Accept: 'application/json',
+    },
     /* Base URL to use in actions like `await page.goto('/')`. */
     // baseURL: 'http://localhost:3000',
 
