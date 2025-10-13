@@ -1,5 +1,5 @@
 import { Page } from "@playwright/test";
-import { MaterialPage } from "./material.page";
+import { MaterialPage } from "./ui/material.page";
 
 export class RegisterPage extends MaterialPage{
 

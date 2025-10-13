@@ -1,0 +1,86 @@
+
+================================================================================
+📘 Step 1 - Ưu tiên cao | Priority: 10
+================================================================================
+
+Step 1 - Ưu tiên cao | Gửi lần 1: smsIdDev_3255827075
+response: {
+  "ResultList": [
+    {
+      "Code": "0",
+      "SmsId": "smsIdDev_3255827075",
+      "Telco": "Viettel"
+    }
+  ]
+}
+Gửi thành công smsIdDev_3255827075 | status: 200
+
+
+
+================================================================================
+📘 Step 2 - Ưu tiên trung bình | Priority: 5
+================================================================================
+
+Step 2 - Ưu tiên trung bình | Gửi lần 1: smsIdDev_9120782744
+response: {
+  "ResultList": [
+    {
+      "Code": "0",
+      "SmsId": "smsIdDev_9120782744",
+      "Telco": "Viettel"
+    }
+  ]
+}
+Gửi thành công smsIdDev_9120782744 | status: 200
+
+
+
+================================================================================
+📘 Step 3 - Ưu tiên thấp | Priority: 1
+================================================================================
+
+Step 3 - Ưu tiên thấp | Gửi lần 1: smsIdDev_2394343633
+response: {
+  "ResultList": [
+    {
+      "Code": "0",
+      "SmsId": "smsIdDev_2394343633",
+      "Telco": "Viettel"
+    }
+  ]
+}
+Gửi thành công smsIdDev_2394343633 | status: 200
+
+
+
+================================================================================
+📘 Step 4 - Brandname rỗng hoặc bỏ trống | Priority: 1
+================================================================================
+
+Step 4 - Brandname rỗng hoặc bỏ trống | Gửi lần 1: smsIdDev_966894835
+response: {
+  "ResultList": [
+    {
+      "Code": "0",
+      "SmsId": "smsIdDev_966894835",
+      "Telco": "Viettel"
+    }
+  ]
+}
+Gửi thành công smsIdDev_966894835 | status: 200
+
+
+
+Step 4 - Brandname rỗng hoặc bỏ trống | Gửi lần 2: smsIdDev_6283831865
+response: {
+  "ResultList": [
+    {
+      "Code": "0",
+      "SmsId": "smsIdDev_6283831865",
+      "Telco": "Viettel"
+    }
+  ]
+}
+Gửi thành công smsIdDev_6283831865 | status: 200
+
+
