@@ -10,16 +10,11 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "types": ["node", "@playwright/test"],
-    "baseUrl": "./",
+    "baseUrl": "./", 
     "paths": {
-      "*": ["./*"]
+      "pom/*": ["./pom/*"]
     }
   },
-  "include": [
-  "**/*.ts"
-],
-  "exclude": [
-    "node_modules",
-    "dist"
-  ]
+  "include": ["**/*.ts"],
+  "exclude": ["node_modules", "dist"]
 }

@@ -1,5 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
-
+import './register-aliases';
 /**
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
@@ -83,5 +83,7 @@ export default defineConfig({
   //   command: 'npm run start',
   //   url: 'http://localhost:3000',
   //   reuseExistingServer: !process.env.CI,
-  // },
+   metadata: {
+    tsconfig: 'tsconfig.json',
+   },
 });

@@ -1,13 +1,17 @@
-import { APIResponse, test, expect } from '@playwright/test';
+import {  test, expect, APIResponse} from '@playwright/test';
+import { LoginAPITest } from 'pom/api/login-dev-pom-sms-iris-api';
 import crypto from 'crypto';
 
 
-const baseURL: string = "http://192.168.1.9:40010";
+// const baseURL: string = "http://192.168.1.9:40010";
 let access_token: string = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjpbIkNhbXBhaWduQ01TLkNhbXBhaWduLkNoZWNrU3RhdHVzIiwiQ3VzdG9tZXJSZXBvcnQuVmlldy5BbGxFdm91Y2hlciIsIk9UVE1lc3NhZ2UuTWVzc2FnZS5TZW5kQWRtaW4iLCJDYW1wYWlnbkNNUy5Qcm9tb3RlU21TLk1hbmFnZSIsIkIyQi5DTVMuMjAxOS5DYW1wYWlnbi5DcmVhdGUiLCJJcmlzLk9DQi5SZXBvcnQuVmlldyIsIklyaXMuQjJCMjAxOC5TbXMuVmlld1JlcG9ydCIsIk9UVE1lc3NhZ2UuTWVzc2FnZS5TZW5kIiwiQ2FtcGFpZ25DTVMuUHJvbW90ZVNtUy5BcHByb3ZlIiwiSXJpcy5CMkIyMDE4LlNtcy5WaWV3IiwiQ3VzdG9tZXJSZXBvcnQuVmlldy5Fdm91Y2hlciIsIkJyYW5kbmFtZS5IYW5sZGVyU01TRXJyb3IuTWFuYWdlIiwiSXJpcy5CMkIuU21zLlNlbmQiLCJDYW1wYWlnbkNNUy5BZG1pbiIsIkNhbXBhaWduQ01TLkNhbXBhaWduLkRvd25sb2FkIiwiQ2FtcGFpZ25DTVMuU01TLlJlcG9ydC5WaWV3cyIsIkNhbXBhaWduQ01TLkNhbXBhaWduLkNyZWF0ZSJdLCJ1bmlxdWVfbmFtZSI6ImlyaXMiLCJzdWIiOiIxNzA4ZWU1MS02OGRiLTRlOWEtOTU3Yi0wYmNiNDQ2Y2YzYTMiLCJuYmYiOjE3NjAwODc3MjksImV4cCI6MTc2MDA4OTUyOSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDoyOTkyIiwiYXVkIjoiNDc2QkI5QTEtMDAwMC00OTlGLTg5MjgtNUY1MENFNjQ1NEMzIn0.PWDH4uWVV4Yfr5NlLE-t_-E_4sDXAMDwm3FIHW4ompk';
 // const random = Math.floor(Math.random() * 10000);
+const grant_type: string = 'password';
 const username: string = 'iris';
 const password: string = 'iris@123';
 const brandname: string = 'IRIS';
+
+let loginAPITest: LoginAPITest;
 
 
 // Random
@@ -27,19 +31,10 @@ for (let i = 0; i < 1000; i++) {
 
 test.describe('Dự án SMS môi trường dev', () => {
 
-    test.beforeEach('Get token', async ({ request }) => {
+    test.beforeEach('Testcase 1: Get token', async ({ request }) => {
 
-        const response: APIResponse = await request.post(`${baseURL}/oauth2/token`, {
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'Authorization': 'Basic ' + Buffer.from(`${username}:${password}`).toString('base64')
-            },
-            form: {
-                grant_type: 'password',
-                username: username,
-                password: password
-            },
-        });
+        loginAPITest = new LoginAPITest(request);
+        const response: APIResponse = await loginAPITest.UserLoginMTTest(grant_type, username, password);
 
         const statusCode = response.status();
         expect(statusCode).toBe(200);

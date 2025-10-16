@@ -1,5 +1,5 @@
 import { Page, Locator } from "@playwright/test";
-import { ProductPage } from "./production.page";
+import { ProductPage02 } from "./02.pom.product.page";
 import { register } from "module";
 
 

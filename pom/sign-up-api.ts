@@ -1,8 +1,8 @@
-import { APIRequestContext } from "node_modules/playwright/test";
-
+import { APIRequestContext } from "@playwright/test";
 export class SignUpAPI {
+    //POM chỉ chauws hành động thôi, k chứa  logic validate 
     request: APIRequestContext;
-    baseURL: string = 'https://conduit.bondaracademy.com';
+    baseURL: string = 'https://conduit.bondaracademy.com/';
     endPointSignUp: string = '/api/users';
 
     constructor(request: APIRequestContext) {
@@ -10,7 +10,7 @@ export class SignUpAPI {
     }
 
     async signUp(email: string, password: string, username: string) {
-        const requestUrl: string = `${this.baseURL}${this.endPointSignUp}`;
+        const requestUrl: string = `${this.baseURL}/api/users`;
         const response = await this.request.post(requestUrl, {
             data: {
                 "user": {
@@ -21,5 +21,6 @@ export class SignUpAPI {
             }
         });
         return response;
+
     }
 }

@@ -1,17 +1,18 @@
 import { APIResponse, test, expect } from '@playwright/test';
-import { SignUpAPI } from 'pom/api/sign-up-api';
+import { SignUpAPI } from 'pom/sign-up-api';
 
-
-const random = Math.floor(Math.random() * 10000);
-const username = `GaoNho${random}`;
-const email = `GaoNho${random}@gmail.com`;
+const username = "GaoNho2022";
+const email = "Gaonho22@gmail.com";
 const password = "Gao@122021";
 
 let signUpAPI: SignUpAPI;
 
 test.describe('Demo POM API', () => {
+
     test('Test SignUp', async ({ request }) => {
+
         signUpAPI = new SignUpAPI(request);
+        
         const response: APIResponse = await signUpAPI.signUp(email, password, username);
 
         //verify statusCode
