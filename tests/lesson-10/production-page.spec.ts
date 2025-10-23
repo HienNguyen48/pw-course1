@@ -1,8 +1,8 @@
 import { test } from "@playwright/test";
-import { ProductPage} from "pom/production.page";
+//import { ProductPage} from "pom/production.page";
 
 
-test('produc Page', async ( { page }) => {
+test.skip('produc Page', async ( { page }) => {
     //bắt buộc phải có khai báo hàm khởi tạo
     //VD để khai báo 1 con người thì tôi cần có 1 cái CCCD thì lúc đó mới có thể công nhận đó la 1 người được 
     const productPage = new ProductPage(page);

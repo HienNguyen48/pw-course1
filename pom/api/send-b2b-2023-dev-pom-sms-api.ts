@@ -4,33 +4,35 @@ export class SendB2B2023SendingListAPI {
     request: APIRequestContext;
     baseURL: string = 'http://192.168.1.9:40010';
     endPoint: string = '/api/sms';
-    token;
+    access_token;
 
-    constructor(request: APIRequestContext) {
+    constructor(request: APIRequestContext, access_token: string) {
         this.request = request;
+        this.access_token = access_token;
     }
 
-    async sendB2B2023SendingList() {
-        const url: string = `${this.baseURL}${this.enPoint}`
+    async SendB2B2023SendingList(brandname: string, IsCheckDuplicate: string, Priority: string, smsId: string, PhoneNumber: string, Content: string, ContentType: string) {
+        const url: string = `${this.baseURL}${this.endPoint}`
         const response  = await this.request.post(url, {
             headers: {
-                Authorization: `Bearer ${access_token}`,
+                Authorization: `Bearer ${this.access_token}`,
                 'Content-Type': 'application/json'
             },
             data: {
                 "SendingList": [
                     {
                         "Brandname": brandname,
-                        "IsCheckDuplicate": "0",
-                        "Priority": '10',
+                        "IsCheckDuplicate": IsCheckDuplicate,
+                        "Priority": Priority,
                         "SmsId": smsId,
-                        "PhoneNumber": "84376717799",
-                        "Content": content,
-                        "ContentType": "0"
+                        "PhoneNumber": PhoneNumber,
+                        "Content": Content,
+                        "ContentType": ContentType
                     },
                 ],
             },
-
+           
         });
+        return response;
     }
 }

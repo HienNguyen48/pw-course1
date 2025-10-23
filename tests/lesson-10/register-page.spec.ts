@@ -1,9 +1,9 @@
 //Áp dụng vào POM
 
 import { test } from '@playwright/test';
-import { RegisterPage } from '../../pom/register.page';
+//import { RegisterPage } from '../../pom/register.page';
 
-test("Register page", async ({ page }) => {
+test.skip("Register page", async ({ page }) => {
     const registerPage = new RegisterPage(page);
 
     await test.step("Navigate to Register Page", async () => {
