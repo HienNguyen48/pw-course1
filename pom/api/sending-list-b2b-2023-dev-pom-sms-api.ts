@@ -52,5 +52,22 @@ export class SendB2B2023SendingListAPI {
         return response;
     }
 
+    async checkPhoneNumber(PhoneNumber: string){
+        switch(true){
+            case PhoneNumber.startsWith("0"):
+                console.log(`✅ ${PhoneNumber} hợp lệ (đầu 0)`);
+                return "valid_0";
+            
+            case PhoneNumber.startsWith("84"):
+                console.log(`✅ ${PhoneNumber} hợp lệ (đầu 84)`);
+                return "valid_84";
+
+            default:
+                console.log(`❌ ${PhoneNumber} không hợp lệ (không bắt đầu bằng 0 hoặc 84)`);
+                return "invalid";
+        }
+
+    }
+
     
 }
