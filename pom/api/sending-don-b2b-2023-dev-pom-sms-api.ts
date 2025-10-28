@@ -11,7 +11,7 @@ export class SendB2B2023SendAPI {
         this.access_token = access_token;
     }
 
-    async SendB2B2023Sending(IsCheckDuplicate: string, SmsId: string, PhoneNumber: string, Content: string, ContentType: string, Telco: string, SendTime: string, Brandname: string) {
+    async SendB2B2023Sending(IsCheckDuplicate: string, smsId: string, PhoneNumber: string, content: string, ContentType: string, Telco: string, SendTime: string, Brandname: string) {
         const url: string = `${this.baseURL}${this.endPoint}`
         const response = await this.request.post(url, {
             headers: {
@@ -20,9 +20,9 @@ export class SendB2B2023SendAPI {
             },
             data: {
                 "IsCheckDuplicate": IsCheckDuplicate,
-                "SmsId": SmsId,
+                "SmsId": smsId,
                 "PhoneNumber": PhoneNumber,
-                "Content": Content,
+                "Content": content,
                 "ContentType": ContentType,
                 "Telco": Telco,
                 "sendTime": SendTime,

@@ -71,7 +71,6 @@ test.describe('Dự án SMS môi trường dev', () => {
 
     test("B2B 2023 - Sending list", async ({ request }) => {
         const highPriority = priority.find(p => p.name === "Cao")!;
-
         await test.step(`Testcase 01: B2B 2023 Sending List - Ưu tiên cao ${highPriority.name}`, async () => {
             const sendB2B2023SendingListAPI = new SendB2B2023SendingListAPI(request, access_token);
 
