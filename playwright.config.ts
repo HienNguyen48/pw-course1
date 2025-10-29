@@ -1,5 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 import './register-aliases';
+import { config } from 'dotenv';
+config();
 /**
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv

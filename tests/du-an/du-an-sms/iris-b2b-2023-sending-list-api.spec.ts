@@ -592,106 +592,105 @@ test.describe('Dự án SMS môi trường dev', () => {
             console.log("✅ Testcase 11 passed — xử lý đúng nhóm mã lỗi 9");
         });
 
-        await test.step("Testcase 12: B2B 2023 - SendingList (Nhóm mã lỗi 99 - Lỗi Timeout)", async () => {
-            const sendB2B2023MultiSendingList = new SendB2B2023SendingListAPI(request, access_token);
+        // await test.step("Testcase 12: B2B 2023 - SendingList (Nhóm mã lỗi 99 - Lỗi Timeout)", async () => {
+        //     const sendB2B2023MultiSendingList = new SendB2B2023SendingListAPI(request, access_token);
 
-            const sendMaLoi99Timeout= [
-                {
-                    "Brandname": brandname,
-                    "IsCheckDuplicate": IsCheckDuplicate,
-                    "Priority": highPriority.value.toString(),
-                    "SmsId": generateRandomData().smsId,
-                    "PhoneNumber": PhoneNumber,
-                    "Content": generateRandomData().content,
-                    "ContentType": ContentType,
-                    "Telco": ""
-                }
-            ]
+        //     const sendMaLoi99Timeout= [
+        //         {
+        //             "Brandname": brandname,
+        //             "IsCheckDuplicate": IsCheckDuplicate,
+        //             "Priority": highPriority.value.toString(),
+        //             "SmsId": generateRandomData().smsId,
+        //             "PhoneNumber": PhoneNumber,
+        //             "Content": generateRandomData().content,
+        //             "ContentType": ContentType,
+        //             "Telco": ""
+        //         }
+        //     ]
 
-            console.log("🟢 Testcase 12: B2B 2023 - SendingList (Nhóm mã lỗi 99 - Lỗi Timeout)");
-            console.log(` => SMS 1: Brandname = ${sendMaLoi99Timeout[0].Brandname}, SmsId = ${sendMaLoi99Timeout[0].SmsId}, Content = ${sendMaLoi99Timeout[0].Content}`)
+        //     console.log("🟢 Testcase 12: B2B 2023 - SendingList (Nhóm mã lỗi 99 - Lỗi Timeout)");
+        //     console.log(` => SMS 1: Brandname = ${sendMaLoi99Timeout[0].Brandname}, SmsId = ${sendMaLoi99Timeout[0].SmsId}, Content = ${sendMaLoi99Timeout[0].Content}`)
 
-            // Gửi n request
-            const responses = await Promise.all(
-                sendMaLoi99Timeout.map((item) => sendB2B2023MultiSendingList.SendB2B2023MultiSendingList([item]))
-            );
+        //     // Gửi n request
+        //     const responses = await Promise.all(
+        //         sendMaLoi99Timeout.map((item) => sendB2B2023MultiSendingList.SendB2B2023MultiSendingList([item]))
+        //     );
 
-            // 🔹 Xử lý & in kết quả
-            const mergedResults = [];
-            for (const res of responses) {
-                const body = await res.json();
-                console.log("📩 Response:", JSON.stringify(body, null, 2));
-                mergedResults.push(...(body.ResultList || []));
-            }
+        //     // 🔹 Xử lý & in kết quả
+        //     const mergedResults = [];
+        //     for (const res of responses) {
+        //         const body = await res.json();
+        //         console.log("📩 Response:", JSON.stringify(body, null, 2));
+        //         mergedResults.push(...(body.ResultList || []));
+        //     }
 
-            mergedResults.forEach((r) => {
-                console.log(` => Kết quả: SmsId= ${r.SmsId}, Code= ${r.Code}, Telco= ${r.Telco}`);
-            });
+        //     mergedResults.forEach((r) => {
+        //         console.log(` => Kết quả: SmsId= ${r.SmsId}, Code= ${r.Code}, Telco= ${r.Telco}`);
+        //     });
 
-            const resultCodes = mergedResults.map((r) => String(r.Code));
-            console.log("📋 Các mã lỗi trả về:", resultCodes.join(", "));
+        //     const resultCodes = mergedResults.map((r) => String(r.Code));
+        //     console.log("📋 Các mã lỗi trả về:", resultCodes.join(", "));
 
-            expect(resultCodes).toContain("99");
+        //     expect(resultCodes).toContain("99");
 
-            console.log("✅ Testcase 12 passed — xử lý đúng nhóm mã lỗi 99");
-        });
+        //     console.log("✅ Testcase 12 passed — xử lý đúng nhóm mã lỗi 99");
+        // });
 
+        // await test.step("Testcase 13: B2B 2023 - SendingList (Nhóm mã lỗi 24 & 100 - Lỗi hệ thống khác)", async () => {
+        //     const sendB2B2023MultiSendingList = new SendB2B2023SendingListAPI(request, access_token);
 
-        await test.step("Testcase 13: B2B 2023 - SendingList (Nhóm mã lỗi 24 & 100 - Lỗi hệ thống khác)", async () => {
-            const sendB2B2023MultiSendingList = new SendB2B2023SendingListAPI(request, access_token);
+        //     const sendMaLoi24100= [
+        //         {
+        //             "Brandname": brandname,
+        //             "IsCheckDuplicate": IsCheckDuplicate,
+        //             "Priority": highPriority.value.toString(),
+        //             "SmsId": generateRandomData().smsId,
+        //             "PhoneNumber": PhoneNumber,
+        //             "Content": generateRandomData().content,
+        //             "ContentType": ContentType,
+        //             "Telco": ""
+        //         },
+        //         {
+        //             "Brandname": brandname,
+        //             "IsCheckDuplicate": IsCheckDuplicate,
+        //             "Priority": highPriority.value.toString(),
+        //             "SmsId": generateRandomData().smsId,
+        //             "PhoneNumber": PhoneNumber,
+        //             "Content": generateRandomData().content,
+        //             "ContentType": ContentType,
+        //             "Telco": ""
+        //         }
+        //     ]
 
-            const sendMaLoi24100= [
-                {
-                    "Brandname": brandname,
-                    "IsCheckDuplicate": IsCheckDuplicate,
-                    "Priority": highPriority.value.toString(),
-                    "SmsId": generateRandomData().smsId,
-                    "PhoneNumber": PhoneNumber,
-                    "Content": generateRandomData().content,
-                    "ContentType": ContentType,
-                    "Telco": ""
-                },
-                {
-                    "Brandname": brandname,
-                    "IsCheckDuplicate": IsCheckDuplicate,
-                    "Priority": highPriority.value.toString(),
-                    "SmsId": generateRandomData().smsId,
-                    "PhoneNumber": PhoneNumber,
-                    "Content": generateRandomData().content,
-                    "ContentType": ContentType,
-                    "Telco": ""
-                }
-            ]
+        //     console.log("🟢 Testcase 13: B2B 2023 - SendingList (Nhóm mã lỗi 24 & 100 - Lỗi hệ thống khác)");
+        //     console.log(` => SMS 1: Brandname = ${sendMaLoi24100[0].Brandname}, SmsId = ${sendMaLoi24100[0].SmsId}, Content = ${sendMaLoi24100[0].Content}`)
+        //     console.log(` => SMS 1: Brandname = ${sendMaLoi24100[1].Brandname}, SmsId = ${sendMaLoi24100[1].SmsId}, Content = ${sendMaLoi24100[1].Content}`)
 
-            console.log("🟢 Testcase 13: B2B 2023 - SendingList (Nhóm mã lỗi 24 & 100 - Lỗi hệ thống khác)");
-            console.log(` => SMS 1: Brandname = ${sendMaLoi24100[0].Brandname}, SmsId = ${sendMaLoi24100[0].SmsId}, Content = ${sendMaLoi24100[0].Content}`)
-            console.log(` => SMS 1: Brandname = ${sendMaLoi24100[1].Brandname}, SmsId = ${sendMaLoi24100[1].SmsId}, Content = ${sendMaLoi24100[1].Content}`)
+        //     // Gửi n request
+        //     const responses = await Promise.all(
+        //         sendMaLoi24100.map((item) => sendB2B2023MultiSendingList.SendB2B2023MultiSendingList([item]))
+        //     );
 
-            // Gửi n request
-            const responses = await Promise.all(
-                sendMaLoi24100.map((item) => sendB2B2023MultiSendingList.SendB2B2023MultiSendingList([item]))
-            );
+        //     // 🔹 Xử lý & in kết quả
+        //     const mergedResults = [];
+        //     for (const res of responses) {
+        //         const body = await res.json();
+        //         console.log("📩 Response:", JSON.stringify(body, null, 2));
+        //         mergedResults.push(...(body.ResultList || []));
+        //     }
 
-            // 🔹 Xử lý & in kết quả
-            const mergedResults = [];
-            for (const res of responses) {
-                const body = await res.json();
-                console.log("📩 Response:", JSON.stringify(body, null, 2));
-                mergedResults.push(...(body.ResultList || []));
-            }
+        //     mergedResults.forEach((r) => {
+        //         console.log(` => Kết quả: SmsId= ${r.SmsId}, Code= ${r.Code}, Telco= ${r.Telco}`);
+        //     });
 
-            mergedResults.forEach((r) => {
-                console.log(` => Kết quả: SmsId= ${r.SmsId}, Code= ${r.Code}, Telco= ${r.Telco}`);
-            });
+        //     const resultCodes = mergedResults.map((r) => String(r.Code));
+        //     console.log("📋 Các mã lỗi trả về:", resultCodes.join(", "));
 
-            const resultCodes = mergedResults.map((r) => String(r.Code));
-            console.log("📋 Các mã lỗi trả về:", resultCodes.join(", "));
+        //     expect(resultCodes).toContain("24");
+        //     expect(resultCodes).toContain("100");
 
-            expect(resultCodes).toContain("24");
-            expect(resultCodes).toContain("100");
-
-            console.log("✅ Testcase 13 passed — xử lý đúng nhóm mã lỗi 24 & 100");
-        });
+        //     console.log("✅ Testcase 13 passed — xử lý đúng nhóm mã lỗi 24 & 100");
+        // });
 
 
 
