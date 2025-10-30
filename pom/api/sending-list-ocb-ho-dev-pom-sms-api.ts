@@ -9,7 +9,7 @@ export class SendOCBHOSendingListAPI {
         this.request = request;
     }
 
-    async SendB2B2023MultiSendingList(UserId: string, Password: string, SendingList: any[]) {
+    async SendOCBHOSendingList(UserId: string, Password: string, SendingList: any[]) {
         const url: string = `${this.baseURL}${this.endPoint}`
         const response = await this.request.post(url, {
             headers: {

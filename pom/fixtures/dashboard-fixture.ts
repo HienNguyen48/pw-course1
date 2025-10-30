@@ -1,4 +1,4 @@
-import { Page, test as base } from "@playwright/test";
+import { Page,expect, test as base } from "@playwright/test";
 //as dùng để đặt tên lại cho 1 từ khóa nào đó
 
 const test = base.extend<{ dashboardPage: Page }>({
