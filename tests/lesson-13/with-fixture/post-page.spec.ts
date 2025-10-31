@@ -1,4 +1,4 @@
-import { test } from '../../../pom/fixtures/index.fixture';
+import { test } from '../../../pom/fixtures/lesson13/index.fixture';
 import { before } from 'node:test';
 
 test.beforeAll(() => {

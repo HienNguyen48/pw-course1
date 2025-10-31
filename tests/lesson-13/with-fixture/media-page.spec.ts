@@ -1,4 +1,4 @@
-import { test } from '../../../pom/fixtures/index.fixture';
+import { test } from '../../../pom/fixtures/lesson13/index.fixture';
 
 test('Media page text', async ({ dashboardPage }) => {
   console.log('code test media page');

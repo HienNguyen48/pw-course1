@@ -1,7 +1,7 @@
 import { test, expect, APIResponse } from '@playwright/test';
-import { LoginAPITest } from 'pom/api/login-dev-pom-sms-iris-api';
+import { LoginAPITest } from 'pom/api/pom-api-du-an-iris/login-dev-pom-sms-iris-api';
 import crypto from 'crypto';
-import { SendB2B2023SendingListAPI } from 'pom/api/sending-list-b2b-2023-dev-pom-sms-api';
+import { SendB2B2023SendingListAPI } from 'pom/api/pom-api-du-an-iris/sending-list-b2b-2023-dev-pom-sms-api';
 
 
 // const baseURL: string = "http://192.168.1.9:40010";

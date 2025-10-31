@@ -1,5 +1,5 @@
 // import { test } from '@playwright/test';
-import { test } from '../../../pom/fixtures/index.fixture';
+import { test } from '../../../pom/fixtures/lesson13/index.fixture';
 // test ('env demo', async() => {
 //     if(process.env.ENV === 'dev'){
 //         console.log(process.env.USERNAME_DEV);

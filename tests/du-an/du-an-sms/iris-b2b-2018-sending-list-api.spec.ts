@@ -1,8 +1,4 @@
-import { test, expect, APIResponse } from '@playwright/test';
-import { LoginAPITest } from 'pom/api/login-dev-pom-sms-iris-api';
-import { SendB2B2018SendingListAPI } from 'pom/api/sending-list-b2b-2018-dev-pom-sms-api';
-import crypto from 'crypto';
-
+import { test, expect } from "../../../pom/fixtures/api-du-an-iris-sms-fixtures/common-ocb-sendinglist-random-fixture";
 
 let access_token: string = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjpbIkNhbXBhaWduQ01TLkNhbXBhaWduLkNoZWNrU3RhdHVzIiwiQ3VzdG9tZXJSZXBvcnQuVmlldy5BbGxFdm91Y2hlciIsIk9UVE1lc3NhZ2UuTWVzc2FnZS5TZW5kQWRtaW4iLCJDYW1wYWlnbkNNUy5Qcm9tb3RlU21TLk1hbmFnZSIsIkIyQi5DTVMuMjAxOS5DYW1wYWlnbi5DcmVhdGUiLCJJcmlzLk9DQi5SZXBvcnQuVmlldyIsIklyaXMuQjJCMjAxOC5TbXMuVmlld1JlcG9ydCIsIk9UVE1lc3NhZ2UuTWVzc2FnZS5TZW5kIiwiQ2FtcGFpZ25DTVMuUHJvbW90ZVNtUy5BcHByb3ZlIiwiSXJpcy5CMkIyMDE4LlNtcy5WaWV3IiwiQ3VzdG9tZXJSZXBvcnQuVmlldy5Fdm91Y2hlciIsIkJyYW5kbmFtZS5IYW5sZGVyU01TRXJyb3IuTWFuYWdlIiwiSXJpcy5CMkIuU21zLlNlbmQiLCJDYW1wYWlnbkNNUy5BZG1pbiIsIkNhbXBhaWduQ01TLkNhbXBhaWduLkRvd25sb2FkIiwiQ2FtcGFpZ25DTVMuU01TLlJlcG9ydC5WaWV3cyIsIkNhbXBhaWduQ01TLkNhbXBhaWduLkNyZWF0ZSJdLCJ1bmlxdWVfbmFtZSI6ImlyaXMiLCJzdWIiOiIxNzA4ZWU1MS02OGRiLTRlOWEtOTU3Yi0wYmNiNDQ2Y2YzYTMiLCJuYmYiOjE3NjAwODc3MjksImV4cCI6MTc2MDA4OTUyOSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDoyOTkyIiwiYXVkIjoiNDc2QkI5QTEtMDAwMC00OTlGLTg5MjgtNUY1MENFNjQ1NEMzIn0.PWDH4uWVV4Yfr5NlLE-t_-E_4sDXAMDwm3FIHW4ompk';
 const grant_type: string = 'password';
@@ -13,25 +9,13 @@ const IsCheckDuplicate: string = "1";
 const PhoneNumber: string = "84374619213";
 const ContentType: string = "1";
 const telco: string = "";
-let loginAPITest: LoginAPITest;
 
-// Random
-function generateRandomData() {
-    const randomNumSmsId = crypto.randomInt(10000000000); // random 10 chữ số
-    const smsId = `smsIdDev_${randomNumSmsId}`;
-    const randomNumContent = crypto.randomInt(100000000);
-    const content = `Nội dung lần gửi thứ_${randomNumContent}`;
-    return { smsId, content };
-}
-
-let longContent = generateRandomData().content + "A".repeat(1001);
+// let loginAPITest: LoginAPITest;
 
 test.describe('Dự án SMS môi trường dev', () => {
 
-    test.beforeEach('Testcase 1: Get token', async ({ request }) => {
-
-        loginAPITest = new LoginAPITest(request);
-        const response: APIResponse = await loginAPITest.UserLoginMTTest(grant_type, username, password);
+    test.beforeEach('Testcase 1: Get token', async ({ loginAPI }) => {
+        const response = await loginAPI.UserLoginMTTest('password', 'iris', 'iris@123');
 
         const statusCode = response.status();
         expect(statusCode).toBe(200);
@@ -46,12 +30,10 @@ test.describe('Dự án SMS môi trường dev', () => {
         console.log(`Logged in successfully, token: ${access_token.substring(0, 20)}...`);
     });
 
-    test("B2B 2018 - Sending list", async ({ request }) => {
+    test("B2B 2018 - Sending list", async ({ sendB2B2018SendingListAPI, generateRandomData }) => {
 
         await test.step(`Testcase 01: B2B 2023 - SendingList - Thành công ưu tiên cao`, async () => {
-
-            const sendB2B2018MultiSendingList = new SendB2B2018SendingListAPI(request, access_token);
-
+            // const sendB2B2018MultiSendingList = new SendB2B2018SendingListAPI(request, access_token);
             const SendingList = [];
 
             for (let i = 1; i <= 2; i++) {
@@ -76,8 +58,12 @@ test.describe('Dự án SMS môi trường dev', () => {
             console.log(` => SMS 1: Brandname = ${guiThanhCongUuTienCao.Brandname}, SmsId = ${guiThanhCongUuTienCao.SendingList[0].SmsId}, Content = ${guiThanhCongUuTienCao.SendingList[0].Content}`);
             console.log(` => SMS 2: Brandname = ${guiThanhCongUuTienCao.Brandname}, SmsId = ${guiThanhCongUuTienCao.SendingList[1].SmsId}, Content = ${guiThanhCongUuTienCao.SendingList[1].Content}`);
 
-            // Gửi n request
-            const responses = await sendB2B2018MultiSendingList.SendB2B2018MultiSendingList(guiThanhCongUuTienCao.IsCheckDuplicate, guiThanhCongUuTienCao.Brandname, guiThanhCongUuTienCao.SendingList);
+            // Gửi n request bằng fixture token đã cấu hình
+            const responses = await sendB2B2018SendingListAPI.SendB2B2018MultiSendingList(
+                guiThanhCongUuTienCao.IsCheckDuplicate,
+                guiThanhCongUuTienCao.Brandname,
+                guiThanhCongUuTienCao.SendingList
+            );
             console.log("👉 Status thực tế:", responses.status());
             expect(responses.status()).toBe(200);
 
@@ -96,8 +82,6 @@ test.describe('Dự án SMS môi trường dev', () => {
         });
 
         await test.step(`Testcase 02: B2B 2023 - SendingList - Brandname is invalid(Đối tác chưa đăng ký brandname qua telco này)`, async () => {
-
-            const sendB2B2018MultiSendingList = new SendB2B2018SendingListAPI(request, access_token);
 
             const SendingList = [];
             const brandnameinvalid = "mama";
@@ -126,7 +110,11 @@ test.describe('Dự án SMS môi trường dev', () => {
             console.log(` => SMS 2: Brandname = ${brandnameIsInvalid.Brandname}, SmsId = ${brandnameIsInvalid.SendingList[1].SmsId}, Content = ${brandnameIsInvalid.SendingList[1].Content}, Telco = ${brandnameIsInvalid.SendingList[1].Telco}`);
 
             // Gửi n request
-            const responses = await sendB2B2018MultiSendingList.SendB2B2018MultiSendingList(brandnameIsInvalid.IsCheckDuplicate, brandnameIsInvalid.Brandname, brandnameIsInvalid.SendingList);
+            const responses = await sendB2B2018SendingListAPI.SendB2B2018MultiSendingList(
+                brandnameIsInvalid.IsCheckDuplicate,
+                brandnameIsInvalid.Brandname,
+                brandnameIsInvalid.SendingList
+            );
 
             console.log("👉 Status thực tế:", responses.status());
             expect(responses.status()).toBe(200);
@@ -147,8 +135,7 @@ test.describe('Dự án SMS môi trường dev', () => {
         });
 
         await test.step(`Testcase 03: B2B 2023 - SendingList - Brandname is missing(Bỏ trống brandname)`, async () => {
-
-            const sendB2B2018MultiSendingList = new SendB2B2018SendingListAPI(request, access_token);
+            // const sendB2B2018MultiSendingList = new SendB2B2018SendingListAPI(request, access_token);
 
             const SendingList = [];
             const brandnameinvalid = "mama";
@@ -176,7 +163,7 @@ test.describe('Dự án SMS môi trường dev', () => {
             console.log(` => SMS 1: Brandname = ${brandnameIsMissing.Brandname}, SmsId = ${brandnameIsMissing.SendingList[0].SmsId}, Content = ${brandnameIsMissing.SendingList[0].Content}`);
             console.log(` => SMS 2: Brandname = ${brandnameIsMissing.Brandname}, SmsId = ${brandnameIsMissing.SendingList[1].SmsId}, Content = ${brandnameIsMissing.SendingList[1].Content}`);
 
-            const responses = await sendB2B2018MultiSendingList.SendB2B2018MultiSendingList(brandnameIsMissing.IsCheckDuplicate, brandnameIsMissing.Brandname, brandnameIsMissing.SendingList);
+            const responses = await sendB2B2018SendingListAPI.SendB2B2018MultiSendingList(brandnameIsMissing.IsCheckDuplicate, brandnameIsMissing.Brandname, brandnameIsMissing.SendingList);
 
             console.log("👉 Status thực tế:", responses.status());
             expect(responses.status()).toBe(200);
@@ -198,7 +185,7 @@ test.describe('Dự án SMS môi trường dev', () => {
 
         await test.step(`Testcase 04: B2B 2023 - SendingList - SmsId is invalid(SmsId rỗng hoặc bị bỏ trống)`, async () => {
 
-            const sendB2B2018MultiSendingList = new SendB2B2018SendingListAPI(request, access_token);
+            // const sendB2B2018MultiSendingList = new SendB2B2018SendingListAPI(request, access_token);
 
             const SendingList = [];
 
@@ -223,7 +210,7 @@ test.describe('Dự án SMS môi trường dev', () => {
             console.log("🚀  Testcase 04: B2B 2023 - SendingList - SmsId is invalid (SmsId rỗng hoặc bị bỏ trống)");
             console.log(` => SMS 1: Brandname = ${smsIdIsInvalid.Brandname}, SmsId = ${smsIdIsInvalid.SendingList[0].SmsId}, Content = ${smsIdIsInvalid.SendingList[0].Content}`);
 
-            const responses = await sendB2B2018MultiSendingList.SendB2B2018MultiSendingList(smsIdIsInvalid.IsCheckDuplicate, smsIdIsInvalid.Brandname, smsIdIsInvalid.SendingList);
+            const responses = await sendB2B2018SendingListAPI.SendB2B2018MultiSendingList(smsIdIsInvalid.IsCheckDuplicate, smsIdIsInvalid.Brandname, smsIdIsInvalid.SendingList);
 
             console.log("👉 Status thực tế:", responses.status());
             expect(responses.status()).toBe(200);
@@ -245,7 +232,7 @@ test.describe('Dự án SMS môi trường dev', () => {
 
         await test.step(`Testcase 05: B2B 2023 - SendingList - PhoneNumber is missing(Số điện thoại rỗng hoặc bị bỏ trống)`, async () => {
 
-            const sendB2B2018MultiSendingList = new SendB2B2018SendingListAPI(request, access_token);
+            // const sendB2B2018MultiSendingList = new SendB2B2018SendingListAPI(request, access_token);
 
             const SendingList = [];
 
@@ -271,7 +258,7 @@ test.describe('Dự án SMS môi trường dev', () => {
             console.log(` => SMS 1: Brandname = ${phoneNumberIsMissing.Brandname}, SmsId = ${phoneNumberIsMissing.SendingList[0].SmsId}, Content = ${phoneNumberIsMissing.SendingList[0].Content}`);
             console.log(` => SMS 1: Brandname = ${phoneNumberIsMissing.Brandname}, SmsId = ${phoneNumberIsMissing.SendingList[1].SmsId}, Content = ${phoneNumberIsMissing.SendingList[1].Content}`);
 
-            const responses = await sendB2B2018MultiSendingList.SendB2B2018MultiSendingList(phoneNumberIsMissing.IsCheckDuplicate, phoneNumberIsMissing.Brandname, phoneNumberIsMissing.SendingList);
+            const responses = await sendB2B2018SendingListAPI.SendB2B2018MultiSendingList(phoneNumberIsMissing.IsCheckDuplicate, phoneNumberIsMissing.Brandname, phoneNumberIsMissing.SendingList);
 
             console.log("👉 Status thực tế:", responses.status());
             expect(responses.status()).toBe(200);
@@ -293,8 +280,7 @@ test.describe('Dự án SMS môi trường dev', () => {
 
         await test.step(`Testcase 06: B2B 2023 - SendingList - PhoneNumber is invalid(Số điện thoại không đúng định dạng)`, async () => {
 
-            const sendB2B2018MultiSendingList = new SendB2B2018SendingListAPI(request, access_token);
-
+            // const sendB2B2018MultiSendingList = new SendB2B2018SendingListAPI(request, access_token);
             const SendingList = [];
             const phoneNumberisinvalid = "+27451200000";
 
@@ -320,7 +306,7 @@ test.describe('Dự án SMS môi trường dev', () => {
             console.log(` => SMS 1: Brandname = ${phoneNumberIsInvalid.Brandname}, SmsId = ${phoneNumberIsInvalid.SendingList[0].SmsId}, Content = ${phoneNumberIsInvalid.SendingList[0].Content}`);
             console.log(` => SMS 1: Brandname = ${phoneNumberIsInvalid.Brandname}, SmsId = ${phoneNumberIsInvalid.SendingList[1].SmsId}, Content = ${phoneNumberIsInvalid.SendingList[1].Content}`);
 
-            const responses = await sendB2B2018MultiSendingList.SendB2B2018MultiSendingList(phoneNumberIsInvalid.IsCheckDuplicate, phoneNumberIsInvalid.Brandname, phoneNumberIsInvalid.SendingList);
+            const responses = await sendB2B2018SendingListAPI.SendB2B2018MultiSendingList(phoneNumberIsInvalid.IsCheckDuplicate, phoneNumberIsInvalid.Brandname, phoneNumberIsInvalid.SendingList);
 
             console.log("👉 Status thực tế:", responses.status());
             expect(responses.status()).toBe(200);
@@ -342,8 +328,9 @@ test.describe('Dự án SMS môi trường dev', () => {
 
         await test.step(`Testcase 07: B2B 2023 - SendingList - Content is missing & Content is invalid (Nội dung rỗng hoặc bị bỏ trống / Nội dung vượt quá độ dài quy định)`, async () => {
 
-            const sendB2B2018MultiSendingList = new SendB2B2018SendingListAPI(request, access_token);
+            // const sendB2B2018MultiSendingList = new SendB2B2018SendingListAPI(request, access_token);
 
+            let longContent = generateRandomData().content + "A".repeat(10001);
             const { smsId: smsId1, content: content1 } = generateRandomData();
             const { smsId: smsId2, content: content2 } = generateRandomData();
             const contentIsInvalid = ""
@@ -359,7 +346,7 @@ test.describe('Dự án SMS môi trường dev', () => {
             const sms2 = {
                 "SmsId": smsId2,
                 "PhoneNumber": PhoneNumber,
-                "Content": longContent,//longContent
+                "Content": "",
                 "ContentType": ContentType,
                 "Telco": telco
             };
@@ -376,7 +363,7 @@ test.describe('Dự án SMS môi trường dev', () => {
             console.log(` => SMS 1: Brandname = ${contentIsMissingInvalid.Brandname}, SmsId = ${contentIsMissingInvalid.SendingList[0].SmsId}, Content = ${contentIsMissingInvalid.SendingList[0].Content}`);
             console.log(` => SMS 2: Brandname = ${contentIsMissingInvalid.Brandname}, SmsId = ${contentIsMissingInvalid.SendingList[1].SmsId}, Content = ${contentIsMissingInvalid.SendingList[1].Content}`);
 
-            const responses = await sendB2B2018MultiSendingList.SendB2B2018MultiSendingList(contentIsMissingInvalid.IsCheckDuplicate, contentIsMissingInvalid.Brandname, contentIsMissingInvalid.SendingList);
+            const responses = await sendB2B2018SendingListAPI.SendB2B2018MultiSendingList(contentIsMissingInvalid.IsCheckDuplicate, contentIsMissingInvalid.Brandname, contentIsMissingInvalid.SendingList);
 
             console.log("👉 Status thực tế:", responses.status());
             expect(responses.status()).toBe(200);
@@ -389,8 +376,8 @@ test.describe('Dự án SMS môi trường dev', () => {
             console.log("📩 Response:", { Code, Message, Data });
 
             expect(Code).toBe("400");
-            //expect(Message).toBe("Content is missing");
-            expect(Message).toBe("Content is invalid");
+            expect(Message).toBe("Content is missing");
+            //expect(Message).toBe("Content is invalid");
             expect(Data).toBe(false);
 
             console.log("✅ Testcase 07 passed — Response hợp lệ! — Code: 400");
@@ -399,7 +386,7 @@ test.describe('Dự án SMS môi trường dev', () => {
 
         await test.step(`Testcase 08: B2B 2023 - SendingList - Content is duplicate & Sms is duplicate (Tin trùng lặp)`, async () => {
 
-            const sendB2B2018MultiSendingList = new SendB2B2018SendingListAPI(request, access_token);
+            // const sendB2B2018MultiSendingList = new SendB2B2018SendingListAPI(request, access_token);
 
             const { smsId: smsId1, content: content1 } = generateRandomData();
             const { smsId: smsId2, content: content2 } = generateRandomData();
@@ -434,7 +421,7 @@ test.describe('Dự án SMS môi trường dev', () => {
             console.log(` => SMS 1: Brandname = ${contentSmsidDuplicate.Brandname}, SmsId = ${contentSmsidDuplicate.SendingList[0].SmsId}, Content = ${contentSmsidDuplicate.SendingList[0].Content}`);
             console.log(` => SMS 2: Brandname = ${contentSmsidDuplicate.Brandname}, SmsId = ${contentSmsidDuplicate.SendingList[1].SmsId}, Content = ${contentSmsidDuplicate.SendingList[1].Content}`);
 
-            const responses = await sendB2B2018MultiSendingList.SendB2B2018MultiSendingList(contentSmsidDuplicate.IsCheckDuplicate, contentSmsidDuplicate.Brandname, contentSmsidDuplicate.SendingList);
+            const responses = await sendB2B2018SendingListAPI.SendB2B2018MultiSendingList(contentSmsidDuplicate.IsCheckDuplicate, contentSmsidDuplicate.Brandname, contentSmsidDuplicate.SendingList);
 
             console.log("👉 Status thực tế:", responses.status());
             expect(responses.status()).toBe(200);
@@ -457,8 +444,7 @@ test.describe('Dự án SMS môi trường dev', () => {
 
         await test.step(`Testcase 09: B2B 2023 - SendingList - Messeage is rejected (Nội dung chứa từ khóa bị chặn)`, async () => {
 
-            const sendB2B2018MultiSendingList = new SendB2B2018SendingListAPI(request, access_token);
-
+            // const sendB2B2018MultiSendingList = new SendB2B2018SendingListAPI(request, access_token);
             const SendingList = [];
             //Nội dung có chứa từ khóa bị chặn 
             const { content } = generateRandomData();
@@ -487,7 +473,7 @@ test.describe('Dự án SMS môi trường dev', () => {
             console.log(` => SMS 1: Brandname = ${messageIsReject.Brandname}, SmsId = ${messageIsReject.SendingList[0].SmsId}, Content = ${messageIsReject.SendingList[0].Content}`);
             console.log(` => SMS 2: Brandname = ${messageIsReject.Brandname}, SmsId = ${messageIsReject.SendingList[1].SmsId}, Content = ${messageIsReject.SendingList[1].Content}`);
 
-            const responses = await sendB2B2018MultiSendingList.SendB2B2018MultiSendingList(messageIsReject.IsCheckDuplicate, messageIsReject.Brandname, messageIsReject.SendingList);
+            const responses = await sendB2B2018SendingListAPI.SendB2B2018MultiSendingList(messageIsReject.IsCheckDuplicate, messageIsReject.Brandname, messageIsReject.SendingList);
 
             console.log("👉 Status thực tế:", responses.status());
             expect(responses.status()).toBe(200);

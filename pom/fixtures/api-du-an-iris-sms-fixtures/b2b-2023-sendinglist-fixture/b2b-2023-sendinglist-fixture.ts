@@ -1,0 +1,1 @@
+import { test as base, expect} from 'pom/api/pom-api-du-an-iris/sending-list-b2b-2023-dev-pom-sms-apigit '

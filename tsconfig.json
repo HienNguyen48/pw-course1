@@ -15,6 +15,6 @@
       "pom/*": ["./pom/*"]
     }
   },
-  "include": ["**/*.ts"],
+  "include": ["**/*.ts", "pom/fixtures/api-du-an-iris-sms-fixtures"],
   "exclude": ["node_modules", "dist"]
 }
