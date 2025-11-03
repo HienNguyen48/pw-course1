@@ -1,5 +1,5 @@
 import { test as base, expect } from '@playwright/test';
-import { LoginAPITest } from 'pom/api/pom-api-du-an-iris/login-dev-pom-sms-iris-api';
+import { LoginAPITest } from 'pom/api/pom-api-du-an-iris/moi-truong-dev/login-dev-pom-sms-iris-api';
 
 
 type LoginFixture = {

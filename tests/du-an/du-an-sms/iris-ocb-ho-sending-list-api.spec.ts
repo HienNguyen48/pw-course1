@@ -1,14 +1,18 @@
-import { test, expect } from "../../../pom/fixtures/api-du-an-iris-sms-fixtures/common-ocb-sendinglist-random-fixture"
+import { test, expect } from "../../../pom/fixtures/api-du-an-iris-sms-fixtures/moi-truong-fixture-dev/common-fixture"
 
-const username: string = 'iris';
-const password: string = 'iris@123';
-const ServiceID: string = 'OCB';
-const PhoneNumber: string = "84374619213";
-const telco: string = "";
+// const username: string = 'iris';
+// const password: string = 'iris@123';
+
 
 test.describe('Dự án SMS môi trường dev', () => {
 
-    test("B2B 2018 - Sending list", async ({ sendOCBHOSendingListAPI, generateRandomData }) => {
+    test("B2B 2018 - Sending list", async ({ sendOCBHOSendingListAPI, generateRandomData, envEnvironmentVariables }) => {
+        //Lấy thông tin biến môi trường
+        const username = envEnvironmentVariables.get("USERNAME");
+        const password = envEnvironmentVariables.get("PASSWORD");
+        const ServiceID: string = 'OCB';
+        const PhoneNumber: string = "84374619213";
+        const telco: string = "";
 
         await test.step(`Testcase 01: B2B 2023 - SendingList - PhoneNumber Is Invalid`, async () => {
 

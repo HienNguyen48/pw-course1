@@ -1,5 +1,5 @@
 // import { test } from '@playwright/test';
-import { test } from '../../../pom/fixtures/lesson13/index.fixture';
+// import { test } from '../../../pom/fixtures/lesson13/index.fixture';
 // test ('env demo', async() => {
 //     if(process.env.ENV === 'dev'){
 //         console.log(process.env.USERNAME_DEV);
@@ -18,9 +18,9 @@ import { test } from '../../../pom/fixtures/lesson13/index.fixture';
 //1. thêm 2 biến LOADING_TIME_DEV = 5000 & LOADING_TIME_PRO = 2000 vào file env
 //Lấy data của LOADING_TIME này ở môi trường prod 
 
-test('demo fixture env config', async ({ envConfig }) => {
-  console.log(envConfig.get('USERNAME'));
-  console.log(envConfig.get('PASSWORD'));
-  console.log(envConfig.get('LOADING_TIME'));
-});
+// test('demo fixture env config', async ({ envConfig }) => {
+//   console.log(envConfig.get('USERNAME'));
+//   console.log(envConfig.get('PASSWORD'));
+//   console.log(envConfig.get('LOADING_TIME'));
+// });
 

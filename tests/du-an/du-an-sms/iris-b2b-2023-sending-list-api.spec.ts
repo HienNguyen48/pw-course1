@@ -1,9 +1,8 @@
-import { test, expect, APIResponse } from '@playwright/test';
-import { LoginAPITest } from 'pom/api/pom-api-du-an-iris/login-dev-pom-sms-iris-api';
-import crypto from 'crypto';
-import { SendB2B2023SendingListAPI } from 'pom/api/pom-api-du-an-iris/sending-list-b2b-2023-dev-pom-sms-api';
-
-
+// import { test, expect, APIResponse } from '@playwright/test';
+// import { LoginAPITest } from 'pom/api/pom-api-du-an-iris/login-dev-pom-sms-iris-api';
+// import crypto from 'crypto';
+// import { SendB2B2023SendingListAPI } from 'pom/api/pom-api-du-an-iris/sending-list-b2b-2023-dev-pom-sms-api';
+import { test, expect } from "../../../pom/fixtures/api-du-an-iris-sms-fixtures/moi-truong-fixture-dev/common-fixture"
 // const baseURL: string = "http://192.168.1.9:40010";
 let access_token: string = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjpbIkNhbXBhaWduQ01TLkNhbXBhaWduLkNoZWNrU3RhdHVzIiwiQ3VzdG9tZXJSZXBvcnQuVmlldy5BbGxFdm91Y2hlciIsIk9UVE1lc3NhZ2UuTWVzc2FnZS5TZW5kQWRtaW4iLCJDYW1wYWlnbkNNUy5Qcm9tb3RlU21TLk1hbmFnZSIsIkIyQi5DTVMuMjAxOS5DYW1wYWlnbi5DcmVhdGUiLCJJcmlzLk9DQi5SZXBvcnQuVmlldyIsIklyaXMuQjJCMjAxOC5TbXMuVmlld1JlcG9ydCIsIk9UVE1lc3NhZ2UuTWVzc2FnZS5TZW5kIiwiQ2FtcGFpZ25DTVMuUHJvbW90ZVNtUy5BcHByb3ZlIiwiSXJpcy5CMkIyMDE4LlNtcy5WaWV3IiwiQ3VzdG9tZXJSZXBvcnQuVmlldy5Fdm91Y2hlciIsIkJyYW5kbmFtZS5IYW5sZGVyU01TRXJyb3IuTWFuYWdlIiwiSXJpcy5CMkIuU21zLlNlbmQiLCJDYW1wYWlnbkNNUy5BZG1pbiIsIkNhbXBhaWduQ01TLkNhbXBhaWduLkRvd25sb2FkIiwiQ2FtcGFpZ25DTVMuU01TLlJlcG9ydC5WaWV3cyIsIkNhbXBhaWduQ01TLkNhbXBhaWduLkNyZWF0ZSJdLCJ1bmlxdWVfbmFtZSI6ImlyaXMiLCJzdWIiOiIxNzA4ZWU1MS02OGRiLTRlOWEtOTU3Yi0wYmNiNDQ2Y2YzYTMiLCJuYmYiOjE3NjAwODc3MjksImV4cCI6MTc2MDA4OTUyOSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDoyOTkyIiwiYXVkIjoiNDc2QkI5QTEtMDAwMC00OTlGLTg5MjgtNUY1MENFNjQ1NEMzIn0.PWDH4uWVV4Yfr5NlLE-t_-E_4sDXAMDwm3FIHW4ompk';
 //const random = Math.floor(Math.random() * 10000);
@@ -18,29 +17,11 @@ const ContentType: string = "1";
 const duplicatedSmsId: string = "SmsId_01";
 const duplicatedContent: string = "Content_01";
 
-
-//nội dung trên 1000 ký tự 
-let longContent = generateRandomData().content + "A".repeat(1001);
-
-//Nội dung có chứa từ khóa bị chặn 
-const { content } = generateRandomData();
-const insertPos = Math.floor(Math.random() * content.length);
-const contentWithQC = content.slice(0, insertPos) + "<QC>" + content.slice(insertPos);
-
-let loginAPITest: LoginAPITest;
-
-// Random
-function generateRandomData() {
-    const randomNum = crypto.randomInt(10000000000); // random 10 chữ số
-    const smsId = `smsIdDev_${randomNum}`;
-    const content = `Nội dung lần gửi thứ_${randomNum}`;
-    return { smsId, content };
-}
-
-const dataList = [];
-for (let i = 0; i < 1000; i++) {
-    dataList.push(generateRandomData());
-}
+// let loginAPITest: LoginAPITest;
+// const dataList = [];
+// for (let i = 0; i < 1000; i++) {
+//     dataList.push(generateRandomData());
+// }
 
 const priority = [
     { "name": "Cao", "value": 10 },
@@ -50,10 +31,10 @@ const priority = [
 
 test.describe('Dự án SMS môi trường dev', () => {
 
-    test.beforeEach('Testcase 1: Get token', async ({ request }) => {
+    test.beforeEach('Testcase 1: Get token', async ({ loginAPI, envEnvironmentVariables}) => {
 
-        loginAPITest = new LoginAPITest(request);
-        const response: APIResponse = await loginAPITest.UserLoginMTTest(grant_type, username, password);
+        // loginAPITest = new LoginAPITest(request);
+        const response = await loginAPI.UserLoginMTTest(grant_type, username, password);
 
         const statusCode = response.status();
         expect(statusCode).toBe(200);
@@ -69,17 +50,17 @@ test.describe('Dự án SMS môi trường dev', () => {
     });
 
 
-    test("B2B 2023 - Sending list", async ({ request }) => {
+    test("B2B 2023 - Sending list", async ({ generateRandomData, sendB2B2023SendingListAPI }) => {
         const highPriority = priority.find(p => p.name === "Cao")!;
         await test.step(`Testcase 01: B2B 2023 Sending List - Ưu tiên cao ${highPriority.name}`, async () => {
-            const sendB2B2023SendingListAPI = new SendB2B2023SendingListAPI(request, access_token);
+            // const sendB2B2023SendingListAPI = new SendB2B2023SendingListAPI(request, access_token);
 
             for (let i = 1; i <= 1; i++) {// gửi 1 sms 
                 const { smsId, content } = generateRandomData();
                 console.log(`🟢 Testcase 01 - Ưu tiên cao => Gửi lần ${i}: smsId: ${smsId}, content: ${content} `);
 
                 try {
-                    const response: APIResponse = await sendB2B2023SendingListAPI.SendB2B2023SendingList(
+                    const response = await sendB2B2023SendingListAPI.SendB2B2023SendingList(
                         brandname,
                         IsCheckDuplicate,
                         highPriority.value.toString(),
@@ -108,14 +89,14 @@ test.describe('Dự án SMS môi trường dev', () => {
 
         const MediumPriority = priority.find(p => p.name === "Trung Bình")!;
         await test.step(`Testcase 02: B2B 2023 Sending List - Ưu tiên Trung Bình ${MediumPriority.name}`, async () => {
-            const sendB2B2023SendingListAPI = new SendB2B2023SendingListAPI(request, access_token);
+            // const sendB2B2023SendingListAPI = new SendB2B2023SendingListAPI(request, access_token);
 
             for (let i = 1; i <= 1; i++) {// gửi 1 sms 
                 const { smsId, content } = generateRandomData();
                 console.log(`🟢 Testcase 02 - Ưu tiên Trung Bình => Gửi lần ${i}: smsId: ${smsId}, content: ${content} `);
 
                 try {
-                    const response: APIResponse = await sendB2B2023SendingListAPI.SendB2B2023SendingList(
+                    const response = await sendB2B2023SendingListAPI.SendB2B2023SendingList(
                         brandname,
                         IsCheckDuplicate,
                         MediumPriority.value.toString(),
@@ -144,14 +125,14 @@ test.describe('Dự án SMS môi trường dev', () => {
 
         const LowPriority = priority.find(p => p.name === "Thấp")!;
         await test.step(`Testcase 03: B2B 2023 Sending List - Ưu tiên Thấp ${LowPriority.name}`, async () => {
-            const sendB2B2023SendingListAPI = new SendB2B2023SendingListAPI(request, access_token);
+            // const sendB2B2023SendingListAPI = new SendB2B2023SendingListAPI(request, access_token);
 
             for (let i = 1; i <= 1; i++) {// gửi 1 sms 
                 const { smsId, content } = generateRandomData();
                 console.log(`🟢 Testcase 03 - Ưu tiên Thấp => Gửi lần ${i}: smsId: ${smsId}, content: ${content} `);
 
                 try {
-                    const response: APIResponse = await sendB2B2023SendingListAPI.SendB2B2023SendingList(
+                    const response = await sendB2B2023SendingListAPI.SendB2B2023SendingList(
                         brandname,
                         IsCheckDuplicate,
                         LowPriority.value.toString(),
@@ -179,7 +160,7 @@ test.describe('Dự án SMS môi trường dev', () => {
         });
 
         await test.step("Testcase 04: B2B 2023 - SendingList (Nhóm mã lỗi 2 & 3 - Brandname rỗng / không hợp lệ)", async () => {
-            const sendB2B2023MultiSendingList = new SendB2B2023SendingListAPI(request, access_token);
+            // const sendB2B2023MultiSendingList = new SendB2B2023SendingListAPI(request, access_token);
 
             const sendMaLoi23 = [
                 {
@@ -210,7 +191,7 @@ test.describe('Dự án SMS môi trường dev', () => {
 
             // Gửi n request
             const responses = await Promise.all(
-                sendMaLoi23.map((item) => sendB2B2023MultiSendingList.SendB2B2023MultiSendingList([item]))
+                sendMaLoi23.map((item) => sendB2B2023SendingListAPI.SendB2B2023MultiSendingList([item]))
             );
 
             // 🔹 Xử lý & in kết quả
@@ -235,7 +216,7 @@ test.describe('Dự án SMS môi trường dev', () => {
         });
 
         await test.step("Testcase 05: B2B 2023 - SendingList (Nhóm mã lỗi 7 & 8 - SmsId không hợp lệ / Lỗi số điện thoại rỗng hoặc bị bỏ trống )", async () => {
-            const sendB2B2023MultiSendingList = new SendB2B2023SendingListAPI(request, access_token);
+            // const sendB2B2023MultiSendingList = new SendB2B2023SendingListAPI(request, access_token);
 
             const sendMaLoi78 = [
                 {
@@ -266,7 +247,7 @@ test.describe('Dự án SMS môi trường dev', () => {
 
             // Gửi n request
             const responses = await Promise.all(
-                sendMaLoi78.map((item) => sendB2B2023MultiSendingList.SendB2B2023MultiSendingList([item]))
+                sendMaLoi78.map((item) => sendB2B2023SendingListAPI.SendB2B2023MultiSendingList([item]))
             );
 
             // 🔹 Xử lý & in kết quả
@@ -291,7 +272,7 @@ test.describe('Dự án SMS môi trường dev', () => {
         });
 
         await test.step("Testcase 06: B2B 2023 - SendingList (Nhóm mã lỗi 9 & 10 - Lỗi do Số điện thoại không đúng định dạng / Lỗi do Nội dung tin rỗng hoặc bị bỏ trống)", async () => {
-            const sendB2B2023MultiSendingList = new SendB2B2023SendingListAPI(request, access_token);
+            // const sendB2B2023MultiSendingList = new SendB2B2023SendingListAPI(request, access_token);
 
             const sendMaLoi910 = [
                 {
@@ -322,7 +303,7 @@ test.describe('Dự án SMS môi trường dev', () => {
 
             // Gửi n request
             const responses = await Promise.all(
-                sendMaLoi910.map((item) => sendB2B2023MultiSendingList.SendB2B2023MultiSendingList([item]))
+                sendMaLoi910.map((item) => sendB2B2023SendingListAPI.SendB2B2023MultiSendingList([item]))
             );
 
             // 🔹 Xử lý & in kết quả
@@ -347,7 +328,15 @@ test.describe('Dự án SMS môi trường dev', () => {
         });
 
         await test.step("Testcase 07: B2B 2023 - SendingList ((Nhóm mã lỗi 11 & 12 - Lỗi nội dung tin vượt quá độ dài quy định / Lỗi nội dung tin có chứa từ khóa bị chặn)", async () => {
-            const sendB2B2023MultiSendingList = new SendB2B2023SendingListAPI(request, access_token);
+            // const sendB2B2023MultiSendingList = new SendB2B2023SendingListAPI(request, access_token);
+
+            //nội dung trên 1000 ký tự 
+            let longContent = generateRandomData().content + "A".repeat(1001);
+
+            //Nội dung có chứa từ khóa bị chặn 
+            const { content } = generateRandomData();
+            const insertPos = Math.floor(Math.random() * content.length);
+            const contentWithQC = content.slice(0, insertPos) + "<QC>" + content.slice(insertPos);
 
             const sendMaLoi1112 = [
                 {
@@ -378,7 +367,7 @@ test.describe('Dự án SMS môi trường dev', () => {
 
             // Gửi n request
             const responses = await Promise.all(
-                sendMaLoi1112.map((item) => sendB2B2023MultiSendingList.SendB2B2023MultiSendingList([item]))
+                sendMaLoi1112.map((item) => sendB2B2023SendingListAPI.SendB2B2023MultiSendingList([item]))
             );
 
             // 🔹 Xử lý & in kết quả
@@ -403,7 +392,7 @@ test.describe('Dự án SMS môi trường dev', () => {
         });
 
         await test.step("Testcase 08: B2B 2023 - SendingList ((Nhóm mã lỗi 13 - Lỗi SendTime không hợp lệ)", async () => {
-            const sendB2B2023MultiSendingList = new SendB2B2023SendingListAPI(request, access_token);
+            // const sendB2B2023MultiSendingList = new SendB2B2023SendingListAPI(request, access_token);
 
             const sendMaLoi13 = [
                 {
@@ -424,7 +413,7 @@ test.describe('Dự án SMS môi trường dev', () => {
 
             // Gửi n request
             const responses = await Promise.all(
-                sendMaLoi13.map((item) => sendB2B2023MultiSendingList.SendB2B2023MultiSendingList([item]))
+                sendMaLoi13.map((item) => sendB2B2023SendingListAPI.SendB2B2023MultiSendingList([item]))
             );
 
             // 🔹 Xử lý & in kết quả
@@ -448,7 +437,7 @@ test.describe('Dự án SMS môi trường dev', () => {
         });
 
         await test.step("Testcase 09: B2B 2023 - SendingList (Nhóm mã lỗi 22  & 23 - Lỗi SmsId bị trùng lặp / Lỗi tin nhắn bị trùng lặp trong vòng 24h) => chỗ này do chưa bật dup", async () => {
-            const sendB2B2023MultiSendingList = new SendB2B2023SendingListAPI(request, access_token);
+            // const sendB2B2023MultiSendingList = new SendB2B2023SendingListAPI(request, access_token);
             for (let i = 1; i <= 2; i++) {
                 const sendMaLoi2223 = [
                     {
@@ -482,7 +471,7 @@ test.describe('Dự án SMS môi trường dev', () => {
 
                 for (const [index, sms] of sendMaLoi2223.entries()) {
                     console.log(` => SMS ${index + 1}: SmsId = ${sms.SmsId}, Content = ${sms.Content}`);
-                    const res = await sendB2B2023MultiSendingList.SendB2B2023MultiSendingList([sms]);
+                    const res = await sendB2B2023SendingListAPI.SendB2B2023MultiSendingList([sms]);
                     const body = await res.json();
                     console.log("📩 Response:", JSON.stringify(body, null, 2));
                     results.push(...(body.ResultList || []));
@@ -503,7 +492,7 @@ test.describe('Dự án SMS môi trường dev', () => {
         });
 
         await test.step("Testcase 10: B2B 2023 - SendingList (Nhóm mã lỗi 1 - Lỗi tài khoản gửi tin không hợp lệ)", async () => {
-            const sendB2B2023MultiSendingList = new SendB2B2023SendingListAPI(request, access_token);
+            // const sendB2B2023MultiSendingList = new SendB2B2023SendingListAPI(request, access_token);
 
             const sendMaLoi1 = [
                 {
@@ -523,7 +512,7 @@ test.describe('Dự án SMS môi trường dev', () => {
 
             // Gửi n request
             const responses = await Promise.all(
-                sendMaLoi1.map((item) => sendB2B2023MultiSendingList.SendB2B2023MultiSendingList([item]))
+                sendMaLoi1.map((item) => sendB2B2023SendingListAPI.SendB2B2023MultiSendingList([item]))
             );
 
             // 🔹 Xử lý & in kết quả
@@ -547,9 +536,9 @@ test.describe('Dự án SMS môi trường dev', () => {
         });
 
         await test.step("Testcase 11: B2B 2023 - SendingList (Nhóm mã lỗi 09 - Lỗi số điện thoại không bắt đầu bằng 0 & 84)", async () => {
-            const sendB2B2023MultiSendingList = new SendB2B2023SendingListAPI(request, access_token);
-            const phoneNumberStatus = sendB2B2023MultiSendingList.checkPhoneNumber(PhoneNumber);
-            expect (phoneNumberStatus).not.toBe("invalid");
+            // const sendB2B2023MultiSendingList = new SendB2B2023SendingListAPI(request, access_token);
+            const phoneNumberStatus = sendB2B2023SendingListAPI.checkPhoneNumber(PhoneNumber);
+            expect(phoneNumberStatus).not.toBe("invalid");
 
             const sendMaLoi09InvalidNumber = [
                 {
@@ -569,7 +558,7 @@ test.describe('Dự án SMS môi trường dev', () => {
 
             // Gửi n request
             const responses = await Promise.all(
-                sendMaLoi09InvalidNumber.map((item) => sendB2B2023MultiSendingList.SendB2B2023MultiSendingList([item]))
+                sendMaLoi09InvalidNumber.map((item) => sendB2B2023SendingListAPI.SendB2B2023MultiSendingList([item]))
             );
 
             // 🔹 Xử lý & in kết quả

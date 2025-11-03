@@ -1,5 +1,5 @@
 import {test as base} from '@playwright/test';
-import { SendOCBHOSendingListAPI } from 'pom/api/pom-api-du-an-iris/sending-list-ocb-ho-dev-pom-sms-api';
+import { SendOCBHOSendingListAPI } from 'pom/api/pom-api-du-an-iris/moi-truong-dev/sending-list-ocb-ho-dev-pom-sms-api';
 
 
 export const test = base.extend<{ sendOCBHOSendingListAPI: SendOCBHOSendingListAPI; }>({

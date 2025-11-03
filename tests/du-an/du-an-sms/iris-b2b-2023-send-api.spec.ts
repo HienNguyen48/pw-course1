@@ -1,8 +1,11 @@
-import { test, expect, APIResponse } from '@playwright/test';
-import { LoginAPITest } from 'pom/api/pom-api-du-an-iris/login-dev-pom-sms-iris-api';
-import crypto from 'crypto';
-import { SendB2B2023SendAPI } from 'pom/api/pom-api-du-an-iris/sending-don-b2b-2023-dev-pom-sms-api';
-import { error } from 'console';
+// import { test, expect, APIResponse } from '@playwright/test';
+// import { LoginAPITest } from 'pom/api/pom-api-du-an-iris/login-dev-pom-sms-iris-api';
+// import crypto from 'crypto';
+// import { SendB2B2023SendAPI } from 'pom/api/pom-api-du-an-iris/sending-don-b2b-2023-dev-pom-sms-api';
+// import { error } from 'console';
+import { LoginAPI } from "pom/api/lesson11/login-pom-api";
+import { test, expect } from "../../../pom/fixtures/api-du-an-iris-sms-fixtures/moi-truong-fixture-dev/common-fixture"
+import { SendB2B2023SendAPI } from "pom/api/pom-api-du-an-iris/moi-truong-dev/sending-don-b2b-2023-dev-pom-sms-api";
 
 let access_token: string = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjpbIkNhbXBhaWduQ01TLkNhbXBhaWduLkNoZWNrU3RhdHVzIiwiQ3VzdG9tZXJSZXBvcnQuVmlldy5BbGxFdm91Y2hlciIsIk9UVE1lc3NhZ2UuTWVzc2FnZS5TZW5kQWRtaW4iLCJDYW1wYWlnbkNNUy5Qcm9tb3RlU21TLk1hbmFnZSIsIkIyQi5DTVMuMjAxOS5DYW1wYWlnbi5DcmVhdGUiLCJJcmlzLk9DQi5SZXBvcnQuVmlldyIsIklyaXMuQjJCMjAxOC5TbXMuVmlld1JlcG9ydCIsIk9UVE1lc3NhZ2UuTWVzc2FnZS5TZW5kIiwiQ2FtcGFpZ25DTVMuUHJvbW90ZVNtUy5BcHByb3ZlIiwiSXJpcy5CMkIyMDE4LlNtcy5WaWV3IiwiQ3VzdG9tZXJSZXBvcnQuVmlldy5Fdm91Y2hlciIsIkJyYW5kbmFtZS5IYW5sZGVyU01TRXJyb3IuTWFuYWdlIiwiSXJpcy5CMkIuU21zLlNlbmQiLCJDYW1wYWlnbkNNUy5BZG1pbiIsIkNhbXBhaWduQ01TLkNhbXBhaWduLkRvd25sb2FkIiwiQ2FtcGFpZ25DTVMuU01TLlJlcG9ydC5WaWV3cyIsIkNhbXBhaWduQ01TLkNhbXBhaWduLkNyZWF0ZSJdLCJ1bmlxdWVfbmFtZSI6ImlyaXMiLCJzdWIiOiIxNzA4ZWU1MS02OGRiLTRlOWEtOTU3Yi0wYmNiNDQ2Y2YzYTMiLCJuYmYiOjE3NjAwODc3MjksImV4cCI6MTc2MDA4OTUyOSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDoyOTkyIiwiYXVkIjoiNDc2QkI5QTEtMDAwMC00OTlGLTg5MjgtNUY1MENFNjQ1NEMzIn0.PWDH4uWVV4Yfr5NlLE-t_-E_4sDXAMDwm3FIHW4ompk';
 const grant_type: string = 'password';
@@ -16,28 +19,6 @@ const telco: string = "";
 const telcoInvalid = "dfsfsdfsd";
 const sendTime: string = "";
 
-let loginAPITest: LoginAPITest;
-
-
-//Nội dung có chứa từ khóa bị chặn 
-const { content } = generateRandomData();
-const insertPos = Math.floor(Math.random() * content.length);
-
-
-// Random
-function generateRandomData() {
-    const randomForSmsId = crypto.randomInt(10000000000);
-    const randomForContent = crypto.randomInt(10000000000);
-    const smsId = `smsIdDev_${randomForSmsId}`;
-    const content = `Nội dung lần gửi thứ_${randomForContent}`;
-    return { smsId, content };
-}
-
-const dataList = [];
-for (let i = 0; i < 1000; i++) {
-    dataList.push(generateRandomData());
-}
-
 const priority = [
     { "name": "Cao", "value": 10 },
     { "name": "Trung Bình", "value": 5 },
@@ -46,10 +27,10 @@ const priority = [
 
 test.describe('Dự án SMS môi trường dev', () => {
 
-    test.beforeEach('Testcase 1: Get token', async ({ request }) => {
+    test.beforeEach('Testcase 1: Get token', async ({ loginAPI, envEnvironmentVariables }) => {
 
-        loginAPITest = new LoginAPITest(request);
-        const response: APIResponse = await loginAPITest.UserLoginMTTest(grant_type, username, password);
+        // loginAPITest = new LoginAPITest(request);
+        const response = await loginAPI.UserLoginMTTest(grant_type, username, password);
 
         const statusCode = response.status();
         expect(statusCode).toBe(200);
@@ -65,18 +46,18 @@ test.describe('Dự án SMS môi trường dev', () => {
     });
 
 
-    test("B2B 2023 - Send", async ({ request }) => {
+    test("B2B 2023 - Send", async ({ sendB2B2023SendAPI, generateRandomData }) => {
         const highPriority = priority.find(p => p.name === "Cao")!;
 
         await test.step(`Testcase 01: B2B 2023 Send - Mã lỗi 1 - Lỗi do tài khoản gửi tin không hợp lệ`, async () => {
-            const sendB2B2023SendAPI = new SendB2B2023SendAPI(request, access_token);
+            // const sendB2B2023SendAPI = new SendB2B2023SendAPI(request, access_token);
 
             for (let i = 1; i <= 1; i++) {// gửi 1 sms 
                 const { smsId, content } = generateRandomData();
                 console.log(`🟢 Testcase 01: B2B 2023 Send - Mã lỗi 1 - Lỗi do tài khoản gửi tin không hợp lệ => Gửi lần ${i}: smsId: ${smsId}, content: ${content}, brandname: ${brandname}`);
 
                 try {
-                    const response: APIResponse = await sendB2B2023SendAPI.SendB2B2023Sending(
+                    const response = await sendB2B2023SendAPI.SendB2B2023Sending(
                         IsCheckDuplicate,
                         smsId,
                         PhoneNumber,
@@ -108,7 +89,7 @@ test.describe('Dự án SMS môi trường dev', () => {
         });
 
         await test.step(`Testcase 02: B2B 2023 Send - Mã lỗi 2 - Lỗi Brandname rỗng hoặc bị bỏ trống`, async () => {
-            const sendB2B2023SendAPI = new SendB2B2023SendAPI(request, access_token);
+            // const sendB2B2023SendAPI = new SendB2B2023SendAPI(request, access_token);
 
             for (let i = 1; i <= 1; i++) {
                 const { smsId, content } = generateRandomData();
@@ -134,7 +115,7 @@ test.describe('Dự án SMS môi trường dev', () => {
                 try {
                     const sms = sendMaLoi02[0];
 
-                    const response: APIResponse = await sendB2B2023SendAPI.SendB2B2023Sending(
+                    const response = await sendB2B2023SendAPI.SendB2B2023Sending(
                         sms.IsCheckDuplicate,
                         sms.SmsId,
                         sms.PhoneNumber,
@@ -169,7 +150,7 @@ test.describe('Dự án SMS môi trường dev', () => {
         });
 
         await test.step(`Testcase 03: B2B 2023 Send - Mã lỗi 3 - Lỗi Brandname không hợp lệ`, async () => {
-            const sendB2B2023SendAPI = new SendB2B2023SendAPI(request, access_token);
+            // const sendB2B2023SendAPI = new SendB2B2023SendAPI(request, access_token);
 
             for (let i = 1; i <= 1; i++) {// gửi 1 sms 
                 const { smsId, content } = generateRandomData();
@@ -193,7 +174,7 @@ test.describe('Dự án SMS môi trường dev', () => {
                 try {
                     const sms = sendMaLoi03[0];
 
-                    const response: APIResponse = await sendB2B2023SendAPI.SendB2B2023Sending(
+                    const response = await sendB2B2023SendAPI.SendB2B2023Sending(
                         sms.IsCheckDuplicate,
                         sms.SmsId,
                         sms.PhoneNumber,
@@ -228,7 +209,7 @@ test.describe('Dự án SMS môi trường dev', () => {
         });
 
         await test.step(`Testcase 04: B2B 2023 Send - Mã lỗi 7 - SmsId không hợp lệ`, async () => {
-            const sendB2B2023SendAPI = new SendB2B2023SendAPI(request, access_token);
+            // const sendB2B2023SendAPI = new SendB2B2023SendAPI(request, access_token);
 
             for (let i = 1; i <= 1; i++) {
                 const { smsId, content } = generateRandomData();
@@ -252,7 +233,7 @@ test.describe('Dự án SMS môi trường dev', () => {
                 try {
                     const sms = sendMaLoi07[0];
 
-                    const response: APIResponse = await sendB2B2023SendAPI.SendB2B2023Sending(
+                    const response = await sendB2B2023SendAPI.SendB2B2023Sending(
                         sms.IsCheckDuplicate,
                         sms.SmsId,
                         sms.PhoneNumber,
@@ -287,7 +268,7 @@ test.describe('Dự án SMS môi trường dev', () => {
         });
 
         await test.step(`Testcase 05: B2B 2023 Send - Mã lỗi 8 - Lỗi số điện thoại rỗng hoặc bị bỏ trống`, async () => {
-            const sendB2B2023SendAPI = new SendB2B2023SendAPI(request, access_token);
+            // const sendB2B2023SendAPI = new SendB2B2023SendAPI(request, access_token);
 
             for (let i = 1; i <= 1; i++) {
                 const { smsId, content } = generateRandomData();
@@ -313,7 +294,7 @@ test.describe('Dự án SMS môi trường dev', () => {
                 expect(phoneNumberStatus).toBe("invalid");
 
                 try {
-                    const response: APIResponse = await sendB2B2023SendAPI.SendB2B2023Sending(
+                    const response = await sendB2B2023SendAPI.SendB2B2023Sending(
                         sendMaLoi08.IsCheckDuplicate,
                         sendMaLoi08.SmsId,
                         sendMaLoi08.PhoneNumber,
@@ -348,7 +329,7 @@ test.describe('Dự án SMS môi trường dev', () => {
         });
 
         await test.step(`Testcase 06: B2B 2023 Send - Mã lỗi 9 - Lỗi số điện thoại không đúng định dạng`, async () => {
-            const sendB2B2023SendAPI = new SendB2B2023SendAPI(request, access_token);
+            // const sendB2B2023SendAPI = new SendB2B2023SendAPI(request, access_token);
 
             for (let i = 1; i <= 1; i++) {// gửi 1 sms 
                 const { smsId, content } = generateRandomData();
@@ -374,7 +355,7 @@ test.describe('Dự án SMS môi trường dev', () => {
                 expect(phoneNumberStatus).toBe("invalid");
 
                 try {
-                    const response: APIResponse = await sendB2B2023SendAPI.SendB2B2023Sending(
+                    const response = await sendB2B2023SendAPI.SendB2B2023Sending(
                         sendMaLoi09.IsCheckDuplicate,
                         sendMaLoi09.SmsId,
                         sendMaLoi09.PhoneNumber,
@@ -409,7 +390,7 @@ test.describe('Dự án SMS môi trường dev', () => {
         });
 
         await test.step(`Testcase 07: B2B 2023 Send - Mã lỗi 10 - Lỗi do nội dung tin rỗng hoặc bị bỏ trống`, async () => {
-            const sendB2B2023SendAPI = new SendB2B2023SendAPI(request, access_token);
+            // const sendB2B2023SendAPI = new SendB2B2023SendAPI(request, access_token);
 
             for (let i = 1; i <= 1; i++) {
                 const { smsId, content } = generateRandomData();
@@ -431,7 +412,7 @@ test.describe('Dự án SMS môi trường dev', () => {
                 console.log(`➡️  SMS: ${JSON.stringify(sendMaLoi10, null, 2)}`);
 
                 try {
-                    const response: APIResponse = await sendB2B2023SendAPI.SendB2B2023Sending(
+                    const response = await sendB2B2023SendAPI.SendB2B2023Sending(
                         sendMaLoi10.IsCheckDuplicate,
                         sendMaLoi10.SmsId,
                         sendMaLoi10.PhoneNumber,
@@ -465,7 +446,7 @@ test.describe('Dự án SMS môi trường dev', () => {
         });
 
         await test.step(`Testcase 08: B2B 2023 Send - Mã lỗi 11 - Lỗi do nội dung vượt quá độ dài quy định`, async () => {
-            const sendB2B2023SendAPI = new SendB2B2023SendAPI(request, access_token);
+            // const sendB2B2023SendAPI = new SendB2B2023SendAPI(request, access_token);
 
             for (let i = 1; i <= 1; i++) {
                 const { smsId } = generateRandomData();
@@ -488,7 +469,7 @@ test.describe('Dự án SMS môi trường dev', () => {
                 console.log(`➡️  SMS: ${JSON.stringify(sendMaLoi11, null, 2)}`);
 
                 try {
-                    const response: APIResponse = await sendB2B2023SendAPI.SendB2B2023Sending(
+                    const response = await sendB2B2023SendAPI.SendB2B2023Sending(
                         sendMaLoi11.IsCheckDuplicate,
                         sendMaLoi11.SmsId,
                         sendMaLoi11.PhoneNumber,
@@ -523,11 +504,15 @@ test.describe('Dự án SMS môi trường dev', () => {
         });
 
         await test.step(`Testcase 09: B2B 2023 Send - Mã lỗi 12 - Lỗi do nội dung tin chứa từ khóa chặn`, async () => {
-            const sendB2B2023SendAPI = new SendB2B2023SendAPI(request, access_token);
+            // const sendB2B2023SendAPI = new SendB2B2023SendAPI(request, access_token);
 
             for (let i = 1; i <= 1; i++) {// gửi 1 sms 
                 const { smsId } = generateRandomData();
+                
+                const { content } = generateRandomData();
+                const insertPos = Math.floor(Math.random() * content.length);
                 const contentWithQC = content.slice(0, insertPos) + "<QC>" + content.slice(insertPos);
+
                 console.log(`🚀 Testcase 09: B2B 2023 Send - Mã lỗi 12 - Lỗi do nội dung vượt quá độ dài quy định => Gửi lần ${i}: smsId: ${smsId}, content: ${contentWithQC}`);
 
                 const sendMaLoi12 =
@@ -546,7 +531,7 @@ test.describe('Dự án SMS môi trường dev', () => {
                 console.log(`➡️  SMS: ${JSON.stringify(sendMaLoi12, null, 2)}`);
 
                 try {
-                    const response: APIResponse = await sendB2B2023SendAPI.SendB2B2023Sending(
+                    const response = await sendB2B2023SendAPI.SendB2B2023Sending(
                         sendMaLoi12.IsCheckDuplicate,
                         sendMaLoi12.SmsId,
                         sendMaLoi12.PhoneNumber,
@@ -580,7 +565,7 @@ test.describe('Dự án SMS môi trường dev', () => {
         });
 
         await test.step(`Testcase 10: B2B 2023 Send - Mã lỗi 13 - Lỗi do sendTime không hợp lệ`, async () => {
-            const sendB2B2023SendAPI = new SendB2B2023SendAPI(request, access_token);
+            // const sendB2B2023SendAPI = new SendB2B2023SendAPI(request, access_token);
 
             for (let i = 1; i <= 1; i++) {// gửi 1 sms 
                 const { smsId, content } = generateRandomData();
@@ -602,7 +587,7 @@ test.describe('Dự án SMS môi trường dev', () => {
                 console.log(`➡️  SMS: ${JSON.stringify(sendMaLoi13, null, 2)}`);
 
                 try {
-                    const response: APIResponse = await sendB2B2023SendAPI.SendB2B2023Sending(
+                    const response = await sendB2B2023SendAPI.SendB2B2023Sending(
                         sendMaLoi13.IsCheckDuplicate,
                         sendMaLoi13.SmsId,
                         sendMaLoi13.PhoneNumber,
@@ -634,7 +619,7 @@ test.describe('Dự án SMS môi trường dev', () => {
         });
 
         await test.step(`Testcase 11: B2B 2023 Send - Mã lỗi 22 - Lỗi do SMS bị trùng lặp (cùng 1 nội dung gửi từ cùng 1 Brandname tới cùng 1 thuê bao trong khoảng thời gian ngắn)`, async () => {
-            const sendB2B2023SendAPI = new SendB2B2023SendAPI(request, access_token);
+            // const sendB2B2023SendAPI = new SendB2B2023SendAPI(request, access_token);
 
             for (let i = 1; i <= 2; i++) {// gửi 1 sms 
                 const { smsId } = generateRandomData();
@@ -658,7 +643,7 @@ test.describe('Dự án SMS môi trường dev', () => {
                 console.log(`➡️  SMS: ${JSON.stringify(sendMaLoi22, null, 2)}`);
 
                 try {
-                    const response: APIResponse = await sendB2B2023SendAPI.SendB2B2023Sending(
+                    const response = await sendB2B2023SendAPI.SendB2B2023Sending(
                         sendMaLoi22.IsCheckDuplicate,
                         sendMaLoi22.SmsId,
                         sendMaLoi22.PhoneNumber,
@@ -690,7 +675,7 @@ test.describe('Dự án SMS môi trường dev', () => {
         });
 
         await test.step(`Testcase 12: B2B 2023 Send - Mã lỗi 23 - Lỗi do Sms trùng lặp trong vòng 24h`, async () => {
-            const sendB2B2023SendAPI = new SendB2B2023SendAPI(request, access_token);
+            // const sendB2B2023SendAPI = new SendB2B2023SendAPI(request, access_token);
 
             for (let i = 1; i <= 1; i++) {
                 const { content } = generateRandomData();
@@ -713,7 +698,7 @@ test.describe('Dự án SMS môi trường dev', () => {
                 console.log(`➡️  SMS: ${JSON.stringify(sendMaLoi23, null, 2)}`);
 
                 try {
-                    const response: APIResponse = await sendB2B2023SendAPI.SendB2B2023Sending(
+                    const response = await sendB2B2023SendAPI.SendB2B2023Sending(
                         sendMaLoi23.IsCheckDuplicate,
                         sendMaLoi23.SmsId,
                         sendMaLoi23.PhoneNumber,
@@ -745,7 +730,7 @@ test.describe('Dự án SMS môi trường dev', () => {
         });
 
         await test.step(`Testcase 13: B2B 2023 Send - Thành công - Ưu tiên cao`, async () => {
-            const sendB2B2023SendAPI = new SendB2B2023SendAPI(request, access_token);
+            // const sendB2B2023SendAPI = new SendB2B2023SendAPI(request, access_token);
 
             for (let i = 1; i <= 1; i++) {// gửi 1 sms 
                 const { smsId, content } = generateRandomData();
@@ -767,7 +752,7 @@ test.describe('Dự án SMS môi trường dev', () => {
                 console.log(`➡️  SMS: ${JSON.stringify(sendUuTienCao0, null, 2)}`);
 
                 try {
-                    const response: APIResponse = await sendB2B2023SendAPI.SendB2B2023Sending(
+                    const response = await sendB2B2023SendAPI.SendB2B2023Sending(
                         sendUuTienCao0.IsCheckDuplicate,
                         sendUuTienCao0.SmsId,
                         sendUuTienCao0.PhoneNumber,
@@ -802,7 +787,7 @@ test.describe('Dự án SMS môi trường dev', () => {
 
         const MediumPriority = priority.find(p => p.name === "Trung Bình")!;
         await test.step(`Testcase 14: B2B 2023 Send - Thành công - Ưu tiên trung bình`, async () => {
-            const sendB2B2023SendAPI = new SendB2B2023SendAPI(request, access_token);
+            // const sendB2B2023SendAPI = new SendB2B2023SendAPI(request, access_token);
 
             for (let i = 1; i <= 1; i++) {// gửi 1 sms 
                 const { smsId, content } = generateRandomData();
@@ -824,7 +809,7 @@ test.describe('Dự án SMS môi trường dev', () => {
                 console.log(`➡️  SMS: ${JSON.stringify(sendUuTienTrungBinh, null, 2)}`);
 
                 try {
-                    const response: APIResponse = await sendB2B2023SendAPI.SendB2B2023Sending(
+                    const response = await sendB2B2023SendAPI.SendB2B2023Sending(
                         sendUuTienTrungBinh.IsCheckDuplicate,
                         sendUuTienTrungBinh.SmsId,
                         sendUuTienTrungBinh.PhoneNumber,
@@ -858,8 +843,8 @@ test.describe('Dự án SMS môi trường dev', () => {
         });
 
         const LowPriority = priority.find(p => p.name === "Thấp")!;
-        await test.step(`Testcase 14: B2B 2023 Send - Thành công - Ưu tiên thấp`, async () => {
-            const sendB2B2023SendAPI = new SendB2B2023SendAPI(request, access_token);
+        await test.step(`Testcase 15: B2B 2023 Send - Thành công - Ưu tiên thấp`, async () => {
+            // const sendB2B2023SendAPI = new SendB2B2023SendAPI(request, access_token);
 
             for (let i = 1; i <= 1; i++) {// gửi 1 sms 
                 const { smsId, content } = generateRandomData();
@@ -881,7 +866,7 @@ test.describe('Dự án SMS môi trường dev', () => {
                 console.log(`➡️  SMS: ${JSON.stringify(sendUuTienThap, null, 2)}`);
 
                 try {
-                    const response: APIResponse = await sendB2B2023SendAPI.SendB2B2023Sending(
+                    const response = await sendB2B2023SendAPI.SendB2B2023Sending(
                         sendUuTienThap.IsCheckDuplicate,
                         sendUuTienThap.SmsId,
                         sendUuTienThap.PhoneNumber,

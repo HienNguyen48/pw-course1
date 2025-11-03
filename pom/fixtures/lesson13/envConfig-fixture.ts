@@ -20,4 +20,4 @@ const test = base.extend<{ envConfig: EnvConfig}>({
         await use (envConfig)
     },
 });
-export{test}
+export{test};
