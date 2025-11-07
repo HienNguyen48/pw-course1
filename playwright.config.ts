@@ -24,10 +24,10 @@ export default defineConfig({
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-   reporter: [
+  reporter: [
     ['list'], // Hiển thị từng test (TCS1, Login article, ...)
     ['html', { open: 'always' }], // Tự động mở giao diện HTML sau khi chạy xong
-   ],
+  ],
   //  'html',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
@@ -41,26 +41,50 @@ export default defineConfig({
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on',
     video: {
-      mode:"on"
+      mode: 'on',
+      size: { width: 1000, height: 1000 }
     }
   },
-
   /* Configure projects for major browsers */
   projects: [
-    {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
-    },
+    // {
+    //   name: 'Mobile web',
+    //   use: { ...devices['iPhone 15 Pro Max'] },
+    // },
 
     {
       name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
+      use: {
+        ...devices['Desktop Firefox'],
+        // viewport: {
+        //   width: 400,
+        //   height: 400
+        // }
+        // locale: 'en-CB',
+        // timezoneId: 'Europe/Paris',
+        // permissions: ["camera"]
+        //colorScheme: 'dark',
+      },
+       dependencies: ['Set up VPN']
+
+    },
+    {
+      name: "Set up VPN",
+      testMatch: /global-setup\.ts/,//tìm file này ở trong project 
+      testDir: './global-settings',//Phạm vi, vị trí  muốn chỉ chạy test ở đâu 
+      teardown: 'Clean up VPN'
+    },
+    {
+      name: "Clean up VPN",
+      testMatch: /global-teardown\.ts/,//tìm file này ở trong project 
+      testDir: './global-settings'//Phạm vi, vị trí  muốn chỉ chạy test ở đâu 
     },
 
-    {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
-    },
+    // {
+    //   name: 'webkit',
+    //   use: { ...devices['Desktop Safari'] },
+    // },
+
 
     /* Test against mobile viewports. */
     // {
@@ -88,7 +112,7 @@ export default defineConfig({
   //   command: 'npm run start',
   //   url: 'http://localhost:3000',
   //   reuseExistingServer: !process.env.CI,
-   metadata: {
+  metadata: {
     tsconfig: 'tsconfig.json',
-   },
+  },
 });
