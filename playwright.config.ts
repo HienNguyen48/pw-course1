@@ -65,7 +65,7 @@ export default defineConfig({
         // permissions: ["camera"]
         //colorScheme: 'dark',
       },
-       dependencies: ['Set up VPN']
+      dependencies: ['Set up VPN']
 
     },
     {
