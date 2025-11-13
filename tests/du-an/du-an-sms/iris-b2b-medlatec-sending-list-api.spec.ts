@@ -29,6 +29,8 @@ test.describe('Dự án SMS môi trường dev', () => {
 
         //In ra 20 kí tự đầu tiên của token nếu không muốn in toàn bộ token thì sẽ dùng câu lệnh này 
         console.log(`Logged in successfully, token: ${access_token.substring(0, 20)}...`);
+
+        console.log("\n" + "=".repeat(100) + "\n");
     });
 
     test("MEDLATEC - Sending list", async ({ sendMedlatecSendingListAPI, generateRandomData }) => {
@@ -73,13 +75,58 @@ test.describe('Dự án SMS môi trường dev', () => {
             const body = await responses.json();
             console.log("📩 Response:", JSON.stringify(body, null, 2));
 
-            const { Code, SmsId } = body;
-            console.log("📩 Response:", { Code, SmsId });
+            expect(body).toHaveProperty("ResultList");
+            expect(Array.isArray(body.ResultList)).toBe(true);
 
-            expect(Code).toBe("5");
+            for (const result of body.ResultList) {
+                const { Code, SmsId } = result;
+                console.log('📩 Response item:', { Code, SmsId });
+                expect(Code).toBe("5");
+            }
 
-            console.log("✅ Testcase 01 passed — Response hợp lệ! — Code: 400");
+            console.log("✅ Testcase 01 passed — Response hợp lệ! — Code: 200");
+            console.log("\n" + "=".repeat(100) + "\n");
 
+        });
+
+        await test.step(`Testcase 02: MEDLATEC - SendingList -  UnitId rỗng hoặc bị bỏ trống`, async () => {
+            const { smsId: smsId1, content: content1 } = generateRandomData();
+            const { smsId: smsId2, content: content2 } = generateRandomData();
+
+            const success04 = [
+                {
+                    "Brandname": brandname,
+                    "IsCheckDuplicate": isCheckDuplicate,
+                    "UnitId": "",
+                    "SmsId": smsId1,
+                    "PhoneNumber": phoneNumber,
+                    "Content": content1,
+                    "ContentType": contentType,
+                    "Telco": telco
+                }
+
+            ]
+            console.log("🚀  Testcase 02: MEDLATEC - SendingList -  UnitId rỗng hoặc bị bỏ trống");
+            console.log(` => SMS 1: Brandname = ${success04[0].Brandname}, SmsId = ${success04[0].SmsId}, Content = ${success04[0].Content}`);
+
+            const responses = await sendMedlatecSendingListAPI.SendMedlatecMultiSendingList(success04);
+
+            console.log("👉 Status thực tế:", responses.status());
+            expect(responses.status()).toBe(200);
+
+            const body = await responses.json();
+            console.log("📩 Response:", JSON.stringify(body, null, 2));
+
+            expect(body).toHaveProperty("ResultList");
+            expect(Array.isArray(body.ResultList)).toBe(true);
+
+            for (const result of body.ResultList) {
+                const { Code, SmsId } = result;
+                console.log('📩 Response item:', { Code, SmsId });
+                expect(Code).toBe("4");
+            }
+
+            console.log("✅ Testcase 02 passed — Response hợp lệ! — Code: 200");
             console.log("\n" + "=".repeat(100) + "\n");
 
         });
