@@ -31,7 +31,7 @@ export default defineConfig({
   //  'html',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
-    baseURL: 'http://192.168.1.9:40010',
+    baseURL: process.env.BASE_URL,
     extraHTTPHeaders: {
       Accept: 'application/json',
     },
@@ -44,6 +44,7 @@ export default defineConfig({
       mode: 'on',
       size: { width: 1000, height: 1000 }
     }
+    
   },
   /* Configure projects for major browsers */
   projects: [

@@ -1,9 +1,7 @@
-import { test, expect } from "../../../pom/fixtures/api-du-an-iris-sms-fixtures/moi-truong-fixture-dev/common-fixture"
+import { test, expect, APIHelper } from "../../../pom/fixtures/api-du-an-iris-sms-fixtures/moi-truong-fixture-dev/common-fixture"
 
 let access_token: string = '';
-// const grant_type: string = 'password';
-// const username: string = 'iris';
-// const password: string = 'iris@123';
+
 const brandname: string = 'IRIS';
 const IsCheckDuplicate: string = "1";
 const PhoneNumber: string = "84374619213";
@@ -31,7 +29,10 @@ test.describe('Dự án SMS môi trường dev', () => {
         console.log(`Logged in successfully, token: ${access_token.substring(0, 20)}...`);
     });
 
-    test("B2B 2018 - Sending list", async ({ sendB2B2018SendingListAPI, generateRandomData }) => {
+    test("B2B 2018 - Sending list", async ({ sendB2B2018SendingListAPI, generateRandomData, envEnvironmentVariables, apiHelper}) => {
+
+        const username = envEnvironmentVariables.get("USERNAME");
+        const password = envEnvironmentVariables.get("PASSWORD");
 
         await test.step(`Testcase 01: B2B 2023 - SendingList - Thành công ưu tiên cao`, async () => {
             // const sendB2B2018MultiSendingList = new SendB2B2018SendingListAPI(request, access_token);
@@ -65,11 +66,12 @@ test.describe('Dự án SMS môi trường dev', () => {
                 guiThanhCongUuTienCao.Brandname,
                 guiThanhCongUuTienCao.SendingList
             );
-            console.log("👉 Status thực tế:", responses.status());
+           console.log(`👉 Status thực tế: ${responses.status()}`);
             expect(responses.status()).toBe(200);
 
             const body = await responses.json();
             console.log("📩 Response:", JSON.stringify(body, null, 2));
+            apiHelper.logResponse('B2B2018_SendingList',body);
 
             const { Code, Message, Data } = body;
 
