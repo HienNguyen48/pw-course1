@@ -315,7 +315,7 @@ console.log(double(5)); // 10
 ### 11. Bổ sung checkout về một revision bất kì 
 - Sau mỗi commit sẽ có 1 id của commmit khi ta nhập: git log => được gọi là commit hash hay revision 
 
-[Ảnh](image/Screenshot_105.png)
+[Ảnh](tests/lesson3/image/Screenshot_105.png) 
 
 - Để trở về revision trước ta dùng lệnh: git checkout <revision>
      VD: git checkout 7ef27fee7aa3fbd5b73b95b8b69449a4c5b0a38b
