@@ -1,0 +1,42 @@
+2.Trong một folder mới được tạo ra, mình thực hiện lần lượt các lệnh sau. Hãy liệt kê các file theo từng vùng sau khi thao tác một loạt các lệnh sau:
+
+a. Tạo 3 file: file1, file2, file3
+- Local: file1, file2, file3
+- Working Directory:
+- Staging:
+- Repository:
+
+
+b. Chạy lệnh: git init
+- Local:
+- Working Directory: file1, file2, file3
+- Staging:
+- Repository:
+
+
+c. Chạy lệnh: git commit -m”init project”
+- Local:
+- Working Directory: file1, file2, file3
+- Staging:
+- Repository: 
+
+
+d. Chạy lệnh: git add file1
+- Local:
+- Working Directory: file2, file3
+- Staging: file1
+- Repository:
+
+
+e. Chạy lệnh: git commit -m”add file1”
+- Local:
+- Working Directory: file2, file3
+- Staging:
+- Repository: file1
+
+
+f. Chạy lệnh: git commit -m”add file”
+- Local:
+- Working Directory: file2, file3
+- Staging:
+- Repository: file1
