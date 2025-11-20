@@ -1,20 +1,19 @@
 // 1. Viết hàm multiply nhận 2 tham số a và b, in ra kết quả nhân của chúng. Gọi hàm với 2 cặp giá trị khác nhau.
-// function multiply (a,b){
-//     return a * b;
-// }
-// console.log(multiply(10,10));
-// console.log(multiply(23,10));
+function multiply (a,b){
+    return a * b;
+}
+console.log(multiply(10,10));
+console.log(multiply(23,10));
 
-const { Console } = require("console");
 
 // 2. Viết hàm findMin nhận 3 tham số a, b, c, trả về giá trị nhỏ nhất. Gọi hàm và in kết quả với 2 bộ số khác nhau.
-// function findMin(a,b,c){
-//     return Math.min(a, b, c);
-// }
-// console.log(findMin(1, -2, 90));
-// console.log(findMin(1, 22, -230));
+function findMin(a,b,c){
+    return Math.min(a, b, c);
+}
+console.log(findMin(1, -2, 90));
+console.log(findMin(1, 22, -230));
 
-// 3. Viết hàm getTopStudents nhận 2 tham số: => bài này em đang làm dở vì chưa hiểu
+// 3. Viết hàm getTopStudents nhận 2 tham số: 
 // ● students: mảng các object, mỗi object chứa name (tên) và score (điểm).
 // ● threshold: ngưỡng điểm để được coi là "top" (số).
 // Hàm trả về mảng mới chứa tên của những học sinh có điểm >= threshold.
@@ -33,14 +32,14 @@ let students = [
         score: 9
     },
 ]
+
 let threshold = 8;
 
-function getTopStudents(students, threshold){
-    
-}
+let studentNew = students.filter(students => students.score >= threshold);
+console.log(studentNew);
 
 
-// 4. Viết hàm calculateInterest nhận 3 tham số: => bài này e đang làm dở vì chưa hiểu
+// 4. Viết hàm calculateInterest nhận 3 tham số: 
 // ● principal: số tiền gửi ban đầu (số).
 // ● rate: lãi suất hàng năm (phần trăm, ví dụ 5 nghĩa là 5%).
 // ● years: số năm gửi.
@@ -49,10 +48,11 @@ function getTopStudents(students, threshold){
 let principal = 50000000;
 let rate = 5;
 let years = 3;
-let totalMoney = 0;
+
 function totalMoney(principal, rate, years){
-   
-        
-    }
+    return total;
+}
+let total = principal + principal * rate * years / 100;
+console.log(total);
 
 
