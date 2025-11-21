@@ -1,0 +1,28 @@
+preceding
+
+Ví dụ 1:
+<div id="preceding1-1"> (phần tử trước current1).
+<div id="preceding1-2"> (phần tử trước current1).
+
+Ví dụ 2:
+<div id="preceding2-1"> (phần tử trước current2).
+<div id="preceding2-2"> (phần tử trước current2).
+
+Ví dụ 3:
+<span id="preceding3-1"> (phần tử trước current3).
+<span id="preceding3-2"> (phần tử trước current3).
+
+
+preceding-sibling
+
+Ví dụ 1:
+<div id="sibling1-1"> (anh chị em trước current1).
+<div id="sibling1-2"> (anh chị em trước current1).
+
+Ví dụ 2:
+<span id="sibling2-1"> (anh chị em trước current2).
+<span id="sibling2-2"> (anh chị em trước current2).
+
+Ví dụ 3:
+<p id="sibling3-1"> (anh chị em trước current3).
+<p id="sibling3-2"> (anh chị em trước current3).

@@ -1,0 +1,5 @@
+a. git clone <url>: Sao chép toàn bộ repository từ URL về máy.
+b. git branch <branch_name>: Tạo một nhánh mới với tên <branch_name>.
+c. git checkout <branch_name>: Chuyển sang nhánh <branch_name>.
+d. git checkout -b <branch_name>: Tạo và chuyển sang nhánh <branch_name>.
+e. git pull origin master: Lấy những thay đổi mới nhất và hợp nhất (merge) nhánh master từ remote origin vào nhánh hiện tại.

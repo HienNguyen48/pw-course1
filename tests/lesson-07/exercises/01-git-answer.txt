@@ -1,0 +1,7 @@
+1. git stash: 
+- Dùng để lưu tạm thời các thay đổi trong working directory (thư mục làm việc) mà bạn chưa commit. Nó sẽ:
+- Lưu trạng thái hiện tại (bao gồm các thay đổi trong tracked files, staged files) vào một vùng lưu trữ tạm thời (stash stack).
+- Làm sạch working directory, đưa nó về trạng thái giống như sau lần commit cuối cùng.
+
+2. git stash pop:
+- Được sử dụng để lấy lại các thay đổi đã stash và áp dụng chúng trở lại vào working directory. Đồng thời, nó xóa stash đó khỏi danh sách stash sau khi áp dụng.

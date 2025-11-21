@@ -1,0 +1,31 @@
+ancestor:
+
+Ví dụ 1:
+<div id="parent1"> (cha của child1)
+<div id="grandparent1"> (ông của child1)
+
+Ví dụ 2:
+<div id="parent2"> (cha trực tiếp của child2)
+<div id="grandparent2"> (ông của child2)
+<div id="great-grandparent2"> (cụ tổ của child2)
+
+Ví dụ 3:
+<div id="parent3"> (cha trực tiếp của child3)
+<div id="grandparent3"> (ông của child3)
+
+
+ancestor-or-self
+
+Ví dụ 1:
+<div id="child1"> (chính nút hiện tại).
+<div id="parent1"> (cha trực tiếp của child1).
+<div id="grandparent1"> (ông của child1).
+
+Ví dụ 2:
+<div id="parent2"> (cha của child2).
+<div id="grandparent2"> (ông của child2).
+<div id="great-grandparent2"> (cụ của child2).
+
+Ví dụ 3:
+<div id="parent3"> (cha của child3).
+<div id="grandparent3"> (ông của child3).

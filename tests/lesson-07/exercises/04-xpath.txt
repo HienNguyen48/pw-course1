@@ -1,0 +1,29 @@
+descendant
+
+Ví dụ 1:
+<div id="child1"> (con trực tiếp của parent1).
+<div id="child2"> (con trực tiếp của parent1).
+
+Ví dụ 2:
+<span id="child2-1"> (cháu của grandparent2).
+<span id="child2-2"> (cháu của grandparent2).
+
+Ví dụ 3:
+<p id="child3-1"> (cháu của grandparent3).
+<p id="child3-2"> (cháu của grandparent3).
+
+
+descendant-or-self
+
+Ví dụ 1:
+<div id="parent1"> (chính nút hiện tại).
+<div id="child1"> (con trực tiếp của parent1).
+<div id="child2"> (con trực tiếp của parent1).
+
+Ví dụ 2:
+<span id="child2-1"> (cháu của grandparent2).
+<span id="child2-2"> (cháu của grandparent2).
+
+Ví dụ 3:
+<p id="child3-1"> (cháu của grandparent3).
+<p id="child3-2"> (cháu của grandparent3).
