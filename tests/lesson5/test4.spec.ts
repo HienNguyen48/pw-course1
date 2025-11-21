@@ -19,7 +19,7 @@ test("Lesson05", async ({ page }) => {
     await page.goto("https://material.playwrightvn.com/");
     });
 
-    await test.step("Open bài học 1", async() => {
+    await test.step("Open bài học 4", async() => {
     await page.locator("//a[text()='Bài học 4: Personal notes']").click();
     });
 

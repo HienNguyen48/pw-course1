@@ -1,0 +1,62 @@
+1. Cấu trúc DOM cơ bản của 1 trang web bao gồm các thẻ gì?
+html → head → body → header/nav/main/section/footer/script
+
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Demo Page</title>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <header>
+    <h1>Website Demo</h1>
+  </header>
+
+  <main>
+    <section>
+      <p>Đây là nội dung.</p>
+    </section>
+  </main>
+
+  <footer>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
+
+2. Hãy mô tả cấu trúc html của 1 bảng (table)
+table → thead → tbody → tfoot → mỗi phần gồm tr → (th/td)
+
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Tên</th>
+      <th>Tuổi</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>Hiền</td>
+      <td>25</td>
+    </tr>
+
+    <tr>
+      <td>2</td>
+      <td>Nguyễn</td>
+      <td>30</td>
+    </tr>
+  </tbody>
+
+  <tfoot>
+    <tr>
+      <td colspan="3">Tổng 2 người</td>
+    </tr>
+  </tfoot>
+</table>

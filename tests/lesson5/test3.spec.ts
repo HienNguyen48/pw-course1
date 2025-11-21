@@ -5,7 +5,7 @@ test("Lesson05", async ({ page }) => {
     await page.goto("https://material.playwrightvn.com/");
     });
 
-    await test.step("Open bài học 1", async() => {
+    await test.step("Open bài học 3", async() => {
     await page.locator("//a[text()='Bài học 3: Todo page']").click();
     });
 
@@ -22,7 +22,7 @@ test("Lesson05", async ({ page }) => {
 
    await test.step("Xóa các đồng bộ có số lẻ", async() => {
     for(let i = 1; i <= 100; i++){
-        if(i %2 !== 0){
+        if(i %2 === 1){//chỗ này cũng có thể để (i %2 !== 0)
             await page.locator(`//button[@id = 'todo-${i}-delete']`).click();
         }
     }
