@@ -2,117 +2,62 @@ import { defineConfig, devices } from '@playwright/test';
 import './register-aliases';
 import { config } from 'dotenv';
 config();
-/**
- * Read environment variables from file.
- * https://github.com/motdotla/dotenv
- */
-// import dotenv from 'dotenv';
-// import path from 'path';
-// dotenv.config({ path: path.resolve(__dirname, '.env') });
 
-/**
- * See https://playwright.dev/docs/test-configuration.
- */
 export default defineConfig({
-  testDir: './',//'./tests',
-  /* Run tests in files in parallel */
+  testDir: './',
   fullyParallel: true,
-  /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
-  /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
-  /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
-  /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: [
-    ['list'], // Hiển thị từng test (TCS1, Login article, ...)
-    ['html', { open: 'always' }], // Tự động mở giao diện HTML sau khi chạy xong
-  ],
-  //  'html',
-  /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
-  use: {
-    baseURL: process.env.BASE_URL,
-    extraHTTPHeaders: {
-      Accept: 'application/json',
-    },
-    /* Base URL to use in actions like `await page.goto('/')`. */
-    // baseURL: 'http://localhost:3000',
 
-    /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
+  reporter: [
+    ['list'],
+    ['html', { open: 'always' }],
+  ],
+
+  use: {
     trace: 'on',
     video: {
       mode: 'on',
-      size: { width: 1000, height: 1000 }
-    }
-    
+      size: { width: 1000, height: 1000 },
+    },
   },
-  /* Configure projects for major browsers */
-  projects: [
-    // {
-    //   name: 'Mobile web',
-    //   use: { ...devices['iPhone 15 Pro Max'] },
-    // },
 
+  projects: [
+    // 🔵 UI TEST (Firefox)
     {
-      name: 'firefox',
+      name: 'ui-firefox',
       use: {
         ...devices['Desktop Firefox'],
-        // viewport: {
-        //   width: 400,
-        //   height: 400
-        // }
-        // locale: 'en-CB',
-        // timezoneId: 'Europe/Paris',
-        // permissions: ["camera"]
-        //colorScheme: 'dark',
       },
-      dependencies: ['Set up VPN']
-
+      dependencies: ['Set up VPN'],
     },
+
+    // 🟢 API TEST
     {
-      name: "Set up VPN",
-      testMatch: /global-setup\.ts/,//tìm file này ở trong project 
-      testDir: './global-settings',//Phạm vi, vị trí  muốn chỉ chạy test ở đâu 
-      teardown: 'Clean up VPN'
+      name: 'api',
+      use: {
+        extraHTTPHeaders: {
+          Accept: 'application/json',
+        },
+      },
     },
+
+    // ⚙️ VPN SETUP
     {
-      name: "Clean up VPN",
-      testMatch: /global-teardown\.ts/,//tìm file này ở trong project 
-      testDir: './global-settings'//Phạm vi, vị trí  muốn chỉ chạy test ở đâu 
+      name: 'Set up VPN',
+      testMatch: /global-setup\.ts/,
+      testDir: './global-settings',
+      teardown: 'Clean up VPN',
     },
 
-    // {
-    //   name: 'webkit',
-    //   use: { ...devices['Desktop Safari'] },
-    // },
-
-
-    /* Test against mobile viewports. */
-    // {
-    //   name: 'Mobile Chrome',
-    //   use: { ...devices['Pixel 5'] },
-    // },
-    // {
-    //   name: 'Mobile Safari',
-    //   use: { ...devices['iPhone 12'] },
-    // },
-
-    /* Test against branded browsers. */
-    // {
-    //   name: 'Microsoft Edge',
-    //   use: { ...devices['Desktop Edge'], channel: 'msedge' },
-    // },
-    // {
-    //   name: 'Google Chrome',
-    //   use: { ...devices['Desktop Chrome'], channel: 'chrome' },
-    // },
+    {
+      name: 'Clean up VPN',
+      testMatch: /global-teardown\.ts/,
+      testDir: './global-settings',
+    },
   ],
 
-  /* Run your local dev server before starting the tests */
-  // webServer: {
-  //   command: 'npm run start',
-  //   url: 'http://localhost:3000',
-  //   reuseExistingServer: !process.env.CI,
   metadata: {
     tsconfig: 'tsconfig.json',
   },
