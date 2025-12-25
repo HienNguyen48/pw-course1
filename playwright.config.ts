@@ -1,14 +1,18 @@
+/// <reference types="@playwright/test" />
+
 import { defineConfig, devices } from '@playwright/test';
-import './register-aliases';
-import { config } from 'dotenv';
-config();
+import { config as dotenvConfig } from 'dotenv';
+
+dotenvConfig();
+
+const isCI = !!process.env.CI;
 
 export default defineConfig({
-  testDir: './',
+  testDir: './tests',
   fullyParallel: true,
-  forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
+  forbidOnly: isCI,
+  retries: isCI ? 2 : 0,
+  workers: isCI ? 1 : undefined,
 
   reporter: [
     ['list'],
@@ -17,23 +21,19 @@ export default defineConfig({
 
   use: {
     trace: 'on',
-    video: {
-      mode: 'on',
-      size: { width: 1000, height: 1000 },
-    },
+    video: { mode: 'on', size: { width: 1000, height: 1000 } },
+    screenshot: 'only-on-failure',
+    baseURL: 'http://192.168.1.9:40101',
   },
 
   projects: [
-    // 🔵 UI TEST (Firefox)
     {
       name: 'ui-firefox',
       use: {
         ...devices['Desktop Firefox'],
+        headless: isCI, // local có UI, CI headless
       },
-      dependencies: ['Set up VPN'],
     },
-
-    // 🟢 API TEST
     {
       name: 'api',
       use: {
@@ -42,23 +42,5 @@ export default defineConfig({
         },
       },
     },
-
-    // ⚙️ VPN SETUP
-    {
-      name: 'Set up VPN',
-      testMatch: /global-setup\.ts/,
-      testDir: './global-settings',
-      teardown: 'Clean up VPN',
-    },
-
-    {
-      name: 'Clean up VPN',
-      testMatch: /global-teardown\.ts/,
-      testDir: './global-settings',
-    },
   ],
-
-  metadata: {
-    tsconfig: 'tsconfig.json',
-  },
 });

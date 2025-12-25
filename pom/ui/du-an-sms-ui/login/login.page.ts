@@ -53,7 +53,9 @@ export class LoginPageSMS extends GeneralBasePageSMS {
     }
 
     async verifySuccess() {
-        await expect(this.page.locator(this.xpathTitleTrangChu)).toBeVisible();
+        // await expect(this.page.locator(this.xpathTitleTrangChu)).toBeVisible({timeout: 10000});
+        await expect(
+            this.page.getByRole('link', { name: /Trang chủ/ })).toBeVisible({ timeout: 15000 });
     }
 
     async getFillUserName() {

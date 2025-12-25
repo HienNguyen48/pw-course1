@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { test, expect } from "@playwright/test";
 import { LoginPageSMS } from "pom/ui/du-an-sms-ui/login/login.page";
 
 const userNameSuccess = "test.admin";

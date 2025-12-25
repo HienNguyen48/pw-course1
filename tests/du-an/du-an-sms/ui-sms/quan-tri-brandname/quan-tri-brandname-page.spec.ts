@@ -1,10 +1,38 @@
-import { expect, test } from "@playwright/test";
-import { BrandName } from "pom/ui/du-an-sms-ui/brandname/brandname.page";
+import { test, expect } from "@playwright/test";
+import { LoginPageSMS } from "pom/ui/du-an-sms-ui/login/login.page";
+import { BrandnamePage } from "pom/ui/du-an-sms-ui/brandname/brandname.page";
 
-test("Brandname", async ({ page }) => {
-    let brandName = new BrandName(page);
+const userNameSuccess = "test.admin";
+const passWordSuccess = "Abc123456@";
 
-    await test.step("Navigate", async () => {
-        await brandName.gotoBrandnamePage();
+test.describe("Brandname", async () => {
+    test("Mở màn hình thêm mới brandname", async ({ page }) => {
+
+        await test.step("Navigate Brandname", async () => {
+            let loginPageSMS = new LoginPageSMS(page);
+            await loginPageSMS.openLoginPage();
+            await loginPageSMS.login(userNameSuccess, passWordSuccess);
+            await loginPageSMS.verifySuccess();
+
+        })
+
+        const brandnamePage = new BrandnamePage(page);
+        await test.step("Click Thêm mới => mở ra màn hình thêm mới", async () => {
+            await brandnamePage.gotoBrandnamePage();
+        })
+
+        await test.step("Click Thêm mới => mở ra màn hình thêm mới", async () => {
+            await brandnamePage.clickBtnThemMoi();
+        })
+
+        await test.step("Fill thông tin trên màn hình thêm mới", async () => {
+            const {brandname} = await brandnamePage.generateRandomDataNumber("iris_");
+            await  brandnamePage.Addbrandname("iris", brandname)
+        })
     })
 })
+
+
+
+
+
