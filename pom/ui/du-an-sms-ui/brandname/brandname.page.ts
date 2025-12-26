@@ -9,6 +9,8 @@ export class BrandnamePage extends GeneralBasePageSMS {
     xpathBtnKiemTra = "//button[@onclick='CheckExistBrandName()' and text()='Kiểm tra']";
     inputNgayhethan = "//input[@id='txtExpDate']";
     inputGhiChu = "//textarea[@id='txtNote']";
+    xpathBtnLuu = "//button[@class = 'btn btn-primary' and text() =' Lưu']";
+    xpathBtnCaiDat = "button#btnBrandnameSettings";
     checkTelco = {
         VIETTEL: 'Viettel', VINA: 'Vinaphone', MOBIFONE: 'Mobifone', VIETNAMOBILE: 'Vietnamobile', GTEL: 'GTel', ITELECOM: 'ITelecom', REDDI: 'Reddi'
     };
@@ -50,7 +52,7 @@ export class BrandnamePage extends GeneralBasePageSMS {
         VIETTEL: [
             { provider: 'NCC_GAPIT', group: 'GROUP_TC_CK_BH' },
             { provider: 'NCC_IRIS', group: 'GROUP_NH' },
-            { provider: 'NCC_NCC_VMG', group: 'GROUP_MXH' },
+            { provider: 'NCC_VMG', group: 'GROUP_MXH' },
             { provider: 'NCC_NEO', group: 'GROUP_TMDT' }
         ],
         VINA: [
@@ -85,10 +87,20 @@ export class BrandnamePage extends GeneralBasePageSMS {
             this.page.locator("text=Quản trị Brandname B2B")
         ).toBeVisible({ timeout: 10000 });
     }
+
+
     async clickBtnThemMoi() {
-        await this.page.locator(this.xpathBtnThemmoi).click();
-        const textThemMoiBrandname = this.page.locator("//h3[@class='m-portlet__head-text' and normalize-space(.)='Thêm mới Brandname']");
-        await expect(textThemMoiBrandname).toBeVisible();
+        const btnThemMoi = this.page.locator(this.xpathBtnThemmoi);
+
+        await expect(btnThemMoi).toBeVisible();
+        await expect(btnThemMoi).toBeEnabled();
+
+        await btnThemMoi.click();
+
+        // chờ input đặc trưng
+        await expect(
+            this.page.locator(this.inputBrandname)
+        ).toBeVisible({ timeout: 10000 });
     }
     async fillKhachHang(khachhang: string) {
         const selectKhachHang = this.page.locator(this.CssClickComboboxKH);
@@ -117,14 +129,102 @@ export class BrandnamePage extends GeneralBasePageSMS {
         await this.fillKhachHang(khachhang);
         await this.fillBrandname(brandname);
     }
-    async fillEndDate() {
+    // async fillEndDate() {
+
+    // }
+    async ChecktelcoCheckbox(name: keyof typeof this.checkTelco) {
+        const text = this.checkTelco[name];
+
+        const checkboxTelco = this.page.locator(`//input[@name='cbTelco' and @value='${text}']`)
+        const label = this.page.locator(`//label[contains(normalize-space(), 'Mở luồng ${text}')]`);
+
+        if (await checkboxTelco.isChecked()) return;
+        await label.click();
 
     }
-    async telcoCheckbox(name: string) {
-        return await this.page.locator(`//input[@id='ckViettel' and @value = '${name}']`).check();
+    async checkCaiDat(telco: keyof typeof this.checkTelco) {
+        const text = this.checkTelco[telco];
+        const checkCaiDat = this.page.locator(`//button[@onclick="ShowModalConfig('${text}')"]`);
+        await expect(checkCaiDat).toBeVisible();
+        await checkCaiDat.click();
     }
-    async checkCaiDat(name: string) {
-        return this.page.locator(`//button[@onclick="ShowModalConfig('${name}')"]`)
+    // async checkNhaCungCap(NCC: keyof typeof this.checkNCC) {
+    //     const text = this.checkNCC[NCC];
+    //     const checkNhaCungCap = this.page.locator(`//input[@type='checkbox' and @value='${text}']/following-sibling::label[1]`);
+    //     await expect(checkNhaCungCap).toBeVisible();
+
+    //     await checkNhaCungCap.click();
+    //     // const labelinputcheckbox = checkNhaCungCap.locator("xpath=following-sibling::label[1]");
+
+    //     // await checkNhaCungCap.waitFor({ state: 'visible' });
+
+    //     // if (!(await checkNhaCungCap.isChecked())) {
+    //     //     await checkNhaCungCap.check({ force: true });
+    //     //     // await this.page.waitForTimeout(1000);
+    //     // }
+    // }
+
+    async checkNhaCungCap(NCC: keyof typeof this.checkNCC) {
+        const text = this.checkNCC[NCC];
+
+        const checkboxUI = this.page.locator(
+            `//input[@type='checkbox' and @value='${text}']/ancestor::label`
+        );
+
+        await expect(checkboxUI).toBeVisible();
+        await checkboxUI.click();
+    }
+    async checkNhom(group: keyof typeof this.checkGroup) {
+        const text = this.checkGroup[group];
+        const clickcomboNhom = this.page.locator(`//span[contains(@class,'select2-selection__rendered')]`);
+        await clickcomboNhom.waitFor({ state: 'visible' });
+        await clickcomboNhom.click();
+
+        const ChonNhom = this.page.locator(`//li[contains(@class,'select2-results__option') and normalize-space()='${text}']`);
+        await ChonNhom.waitFor({ state: 'visible' });
+        await ChonNhom.click();
+
+        await expect(clickcomboNhom).toHaveText(text);
+    }
+    async applyAllTelcoConfig(telcos: string[]) {
+        for (const telco of telcos) {
+            //click vào các telco
+            await this.ChecktelcoCheckbox(telco as keyof typeof this.checkTelco);
+
+            // await this.checkCaiDat(telco as keyof typeof this.checkCaiDat);
+
+            //Lấy ds NCC & group theo telco đã chọn
+            //ép kiểu telco(bằng cách dùng as keyof typeof) thành key hợp lệ của object để typescript k báo lỗi
+            const listNCC = this.Telco_Provider_Group[telco as keyof typeof this.Telco_Provider_Group];
+
+            //nếu telco k có ncc => bỏ qua 
+            if (!listNCC || listNCC.length === 0) continue;
+            //lặp qua tất cả các ncc & group 
+            for (const item of listNCC) {
+                const { provider, group } = item;
+                await this.checkCaiDat(telco as keyof typeof this.checkCaiDat);
+                //chọn ncc
+                await this.checkNhaCungCap(provider as keyof typeof this.checkNCC);
+                await this.checkNhom(group as keyof typeof this.checkGroup);
+
+                //click Lưu
+                const btnLuu = this.page.locator(this.xpathBtnLuu);
+                if (await btnLuu.isVisible()) {
+                    await btnLuu.click();
+                }
+                await this.page.waitForSelector(this.xpathBtnLuu, {
+                    state: 'detached'
+                });
+
+
+            }
+
+        }
+    }
+    async checkBtnCaiDat() {
+        const btnCaiDat = this.page.locator(this.xpathBtnCaiDat);
+        await expect(btnCaiDat).toBeVisible();
+        await btnCaiDat.click();
     }
 
 }

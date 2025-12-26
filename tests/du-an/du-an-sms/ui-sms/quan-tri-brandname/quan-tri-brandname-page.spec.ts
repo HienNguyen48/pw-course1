@@ -26,8 +26,10 @@ test.describe("Brandname", async () => {
         })
 
         await test.step("Fill thông tin trên màn hình thêm mới", async () => {
-            const {brandname} = await brandnamePage.generateRandomDataNumber("iris_");
-            await  brandnamePage.Addbrandname("iris", brandname)
+            const { brandname } = await brandnamePage.generateRandomDataNumber("iris_");
+            await brandnamePage.Addbrandname("iris", brandname);
+            await brandnamePage.applyAllTelcoConfig(["VIETTEL", "VINA", "ITELECOM", "REDDI"]);
+            await brandnamePage.checkBtnCaiDat();
         })
     })
 })
