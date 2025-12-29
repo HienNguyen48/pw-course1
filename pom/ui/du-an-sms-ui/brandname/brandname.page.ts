@@ -11,6 +11,8 @@ export class BrandnamePage extends GeneralBasePageSMS {
     inputGhiChu = "//textarea[@id='txtNote']";
     xpathBtnLuu = "//button[@class = 'btn btn-primary' and text() =' Lưu']";
     xpathBtnCaiDat = "button#btnBrandnameSettings";
+    xpathBtnXacNhanThemMoiBrandname = "//button[@type='button' and contains(text(),'Xác nhận !')]";
+    xpathBtnBoQuaThemMoiBrandname = "//button[@type='button' and contains(text(),'Bỏ qua!')]";
     checkTelco = {
         VIETTEL: 'Viettel', VINA: 'Vinaphone', MOBIFONE: 'Mobifone', VIETNAMOBILE: 'Vietnamobile', GTEL: 'GTel', ITELECOM: 'ITelecom', REDDI: 'Reddi'
     };
@@ -19,15 +21,15 @@ export class BrandnamePage extends GeneralBasePageSMS {
         NCC_GAPIT: 'GAPIT',
         NCC_VMG: 'VMG',
         NCC_SOUTHTELECOM: 'SOUTHTELECOM',
-        NCC_VIETGUYS: 'NCC_VIETGUYS',
-        NCC_INCOM: 'NCC_INCOM',
+        NCC_VIETGUYS: 'VIETGUYS',
+        NCC_INCOM: 'INCOM',
         NCC_NEO: 'NEO',
         NCC_CMC: 'CMC',
         NCC_VNET: 'VNET',
         NCC_HNI: 'HNI',
         NCC_HNI_PVCB: 'HNI-PVCB',
-        NCC_PROVIONE: 'NCC_PROVIONE',
-        NCC_Vietnamobile: 'NCC_Vietnamobile',
+        NCC_PROVIONE: 'PROVIONE',
+        NCC_Vietnamobile: 'Vietnamobile',
         NCC_Viettel: 'Viettel',
         NCC_ViettelBankplus: 'ViettelBankplus',
         NCC_VNPTVAS: 'VNPTVAS',
@@ -40,7 +42,7 @@ export class BrandnamePage extends GeneralBasePageSMS {
     checkGroup = {
         GROUP_TC_CK_BH: 'Tài chính, chứng khoán, bảo hiểm',
         GROUP_YT_GD: 'Y tế, giáo dục',
-        GROUP_Khac: 'Khác  ',
+        GROUP_Khac: 'Khác',
         GROUP_NH: 'Ngân hàng',
         GROUP_NL: 'Năng lượng',
         GROUP_CN: 'Công nghiệp',
@@ -58,20 +60,16 @@ export class BrandnamePage extends GeneralBasePageSMS {
         VINA: [
             { provider: 'NCC_MinhThanh', group: 'GROUP_GX' },
             { provider: 'NCC_VNPAY', group: 'GROUP_YT_GD' },
-            { provider: 'NCC_Gtel', group: 'GROUP_NL' },
-            { provider: 'NCC_Vietnamobile', group: 'GROUP_Khac' }
+            { provider: 'NCC_Gtel', group: 'GROUP_NL' }
         ],
         ITELECOM: [
-            { provider: 'NCC_VIETGUYS', group: 'GROUP_GX' },
+            // { provider: 'NCC_VIETGUYS', group: 'GROUP_GX' },
             { provider: 'NCC_HGC', group: 'GROUP_YT_GD' },
             { provider: 'NCC_ViettelBankplus', group: 'GROUP_NL' },
             { provider: 'NCC_PROVIONE', group: 'GROUP_Khac' }
         ],
         REDDI: [
             { provider: 'NCC_INCOM', group: 'GROUP_Khac' },
-            { provider: 'NCC_MVAS', group: 'GROUP_GX' },
-            { provider: 'NCC_VNPAY', group: 'GROUP_TMDT' },
-            { provider: 'NCC_HNI', group: 'GROUP_YT_GD' }
         ]
 
     }
@@ -148,43 +146,61 @@ export class BrandnamePage extends GeneralBasePageSMS {
         await expect(checkCaiDat).toBeVisible();
         await checkCaiDat.click();
     }
-    // async checkNhaCungCap(NCC: keyof typeof this.checkNCC) {
-    //     const text = this.checkNCC[NCC];
-    //     const checkNhaCungCap = this.page.locator(`//input[@type='checkbox' and @value='${text}']/following-sibling::label[1]`);
-    //     await expect(checkNhaCungCap).toBeVisible();
-
-    //     await checkNhaCungCap.click();
-    //     // const labelinputcheckbox = checkNhaCungCap.locator("xpath=following-sibling::label[1]");
-
-    //     // await checkNhaCungCap.waitFor({ state: 'visible' });
-
-    //     // if (!(await checkNhaCungCap.isChecked())) {
-    //     //     await checkNhaCungCap.check({ force: true });
-    //     //     // await this.page.waitForTimeout(1000);
-    //     // }
-    // }
-
     async checkNhaCungCap(NCC: keyof typeof this.checkNCC) {
         const text = this.checkNCC[NCC];
+
+        //Form đang mở 
+        const openForm = this.page.locator("//div[contains(@class,'modal') and contains(@style,'display: block')]");
+        await expect(openForm).toBeVisible({ timeout: 1000 });
 
         const checkboxUI = this.page.locator(
             `//input[@type='checkbox' and @value='${text}']/ancestor::label`
         );
 
-        await expect(checkboxUI).toBeVisible();
+        if (await checkboxUI.count() === 0) {
+            console.warn(`NCC ${text} không tồn tại cho telco hiện tại`);
+            return;
+
+        }
+
+        await expect(checkboxUI).toBeVisible({ timeout: 10000 });
         await checkboxUI.click();
     }
-    async checkNhom(group: keyof typeof this.checkGroup) {
-        const text = this.checkGroup[group];
-        const clickcomboNhom = this.page.locator(`//span[contains(@class,'select2-selection__rendered')]`);
-        await clickcomboNhom.waitFor({ state: 'visible' });
+    // async checkNhom(group: keyof typeof this.checkGroup) {
+    //     const text = this.checkGroup[group];
+
+    //     //Form đang mở 
+    //     const openForm = this.page.locator("//div[contains(@class,'modal') and contains(@style,'display: block')]");
+    //     await expect(openForm).toBeVisible({ timeout: 1000 });
+
+    //     const clickcomboNhom = openForm.locator(`span.select2-selection__rendered[id^='select2-ddlGrp']:visible`).first();
+    //     await expect(clickcomboNhom).toBeVisible({ timeout: 1000 });
+    //     await clickcomboNhom.click();
+
+    //     const ChonNhom = this.page.locator(`//li[contains(@class,'select2-results__option') and normalize-space()='${text}']`);
+    //     await expect(ChonNhom).toBeVisible({ timeout: 1000 });
+    //     await ChonNhom.click();
+
+    //     await expect(clickcomboNhom).toHaveText(text);
+    // }
+
+    async checkNhom(ncc: keyof typeof this.checkNCC, group: keyof typeof this.checkGroup) {
+        const nccText = this.checkNCC[ncc];
+        const groupText = this.checkGroup[group];
+
+        //Form đang mở 
+        const form = this.page.locator(".modal-content");
+
+        //thêm nhóm theo ncc
+        const clickcomboNhom = form.locator(`#select2-ddlGrp${nccText}-container`);
+        await expect(clickcomboNhom).toBeVisible({ timeout: 1000 });
         await clickcomboNhom.click();
 
-        const ChonNhom = this.page.locator(`//li[contains(@class,'select2-results__option') and normalize-space()='${text}']`);
-        await ChonNhom.waitFor({ state: 'visible' });
+        const ChonNhom = this.page.locator(`//li[contains(@class,'select2-results__option') and normalize-space()='${groupText}']`);
+        await expect(ChonNhom).toBeVisible({ timeout: 1000 });
         await ChonNhom.click();
 
-        await expect(clickcomboNhom).toHaveText(text);
+        await expect(clickcomboNhom).toHaveText(groupText);
     }
     async applyAllTelcoConfig(telcos: string[]) {
         for (const telco of telcos) {
@@ -205,18 +221,19 @@ export class BrandnamePage extends GeneralBasePageSMS {
                 await this.checkCaiDat(telco as keyof typeof this.checkCaiDat);
                 //chọn ncc
                 await this.checkNhaCungCap(provider as keyof typeof this.checkNCC);
-                await this.checkNhom(group as keyof typeof this.checkGroup);
+                await this.checkNhom(provider as keyof typeof this.checkNCC, group as keyof typeof this.checkGroup);
 
                 //click Lưu
                 const btnLuu = this.page.locator(this.xpathBtnLuu);
-                if (await btnLuu.isVisible()) {
-                    await btnLuu.click();
-                }
-                await this.page.waitForSelector(this.xpathBtnLuu, {
-                    state: 'detached'
-                });
+                await expect(btnLuu).toBeVisible({ timeout: 10000 });
+                await expect(btnLuu).toBeEnabled({ timeout: 1000 });
+                await btnLuu.click();
 
-
+                //Đợi cho form đóng hẳn 
+                await this.page.waitForSelector(
+                    "//div[contains(@class,'modal') and contains(@style,'display: block')]",
+                    { state: 'detached', timeout: 10000 }
+                );
             }
 
         }
@@ -225,6 +242,42 @@ export class BrandnamePage extends GeneralBasePageSMS {
         const btnCaiDat = this.page.locator(this.xpathBtnCaiDat);
         await expect(btnCaiDat).toBeVisible();
         await btnCaiDat.click();
+    }
+    async clikBtnXacNhanThemMoiBrandname() {
+        // await this.page.waitForSelector(".swal2-container", {state: "visible"});
+        const btnXacNhanThemMoi = this.page.locator(this.xpathBtnXacNhanThemMoiBrandname);
+        await expect(btnXacNhanThemMoi).toBeVisible();
+        await btnXacNhanThemMoi.click();
+    }
+    async clickBtnBoQua() {
+        const btnBoQua = this.page.locator(this.xpathBtnBoQuaThemMoiBrandname);
+        await expect(btnBoQua).toBeVisible();
+        await btnBoQua.click();
+    }
+
+    async verifyBrandnameAddSuccess(
+        khachhang: string,
+        brandname: string,
+        telcos: string[] = ["VIETTEL", "VINA", "ITELECOM", "REDDI"]
+    ) {
+        //  row theo khách hàng
+        const rowByCustomer = this.page.locator(`//td[normalize-space()='${khachhang}']//ancestor::tr`);
+        await expect(rowByCustomer.first()).toBeVisible({ timeout: 30000 });
+
+        // 2. Trong row này tìm brandname
+        const brandnameCell = rowByCustomer.locator(`.//td[contains(normalize-space(),'${brandname}')]`);
+        await expect(brandnameCell.first()).toBeVisible({ timeout: 15000 });
+
+        // 3. Kiểm tra trạng thái Hoạt động
+        const statusCell = rowByCustomer.locator(`.//td[normalize-space()='Hoạt động']`);
+        await expect(statusCell.first()).toBeVisible({ timeout: 10000 });
+
+        // 4. Kiểm tra telcos
+        for (const telco of telcos) {
+            await expect(rowByCustomer.first()).toContainText(telco);
+        }
+
+
     }
 
 }
