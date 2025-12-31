@@ -255,6 +255,23 @@ export class BrandnamePage extends GeneralBasePageSMS {
         await btnBoQua.click();
     }
 
+    async searchBrandnameInTable(fromdate: string, todate: string, khachhang: string, brandname: string) {
+         await this.page.waitForURL("**/BrandnameB2BManagerV2");
+        const fromDateInput = this.page.locator("//label[contains(text(),'Thời gian ')]//following::input[1]");
+        const toDateInput = this.page.locator("//label[contains(text(),'Thời gian ')]//following::input[2]");
+        await fromDateInput.waitFor({state:"visible", timeout: 300000});
+        await fromDateInput.fill(fromdate);
+        await toDateInput.fill(todate);
+        await this.page.selectOption("//select[@id='userName']", khachhang);
+
+        await this.page.locator("//span[@aria-labelledby='select2-dll_Brandname-container']").click();
+        await this.page.locator(`//li[contains(@class,'select2-results__option') and normalize-space()='${brandname}']`).click();
+
+        await this.page.locator("//button[@id='btnSearch']").click();
+        await this.page.waitForSelector("//table//tbody//tr", { timeout: 10000 });
+    }
+
+
     async verifyBrandnameAddSuccess(
         khachhang: string,
         brandname: string,
@@ -279,6 +296,7 @@ export class BrandnamePage extends GeneralBasePageSMS {
 
 
     }
+
 
 }
 

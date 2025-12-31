@@ -5,6 +5,10 @@ import { BrandnamePage } from "pom/ui/du-an-sms-ui/brandname/brandname.page";
 const userNameSuccess = "test.admin";
 const passWordSuccess = "Abc123456@";
 let newBrandname: string;
+let fromdate = "31/12/2025";
+let todate = "31/12/2025";
+let khachHang = "iris";
+
 
 test.describe("Brandname", async () => {
     test("Mở màn hình thêm mới brandname", async ({ page }) => {
@@ -36,7 +40,8 @@ test.describe("Brandname", async () => {
         })
 
         await test.step("verify brandname đã thêm mới", async()=>{
-            await brandnamePage.verifyBrandnameAddSuccess("iris",newBrandname);
+            await brandnamePage.searchBrandnameInTable(fromdate, todate, khachHang, newBrandname );
+            await brandnamePage.verifyBrandnameAddSuccess("iris", newBrandname);
         })
     })
 })
